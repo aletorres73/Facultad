@@ -1,0 +1,224 @@
+//Punto 1: Lectura de entrada analogica
+
+//a)Función de inicialización del periférico
+#define ADC_CFG (*(uint32_t*) 0x400AC000)
+#define ADC_RD0 (*(uint32_t*) 0x400AC004)
+
+void ADC_Config (void)
+{
+	ADC_CFG&=~0x01		//Habilito el ADC_CFG
+	ADC_CFG|=1<<2;		//Habilito IRQ
+	ADC_CFG|=0x15<<3;	//Selecciono P0.21 como entrada
+}
+
+//b)driver + funcion para iniciar conversion
+
+void ADC_IRQHandler
+{
+	ADC_CFG|=1<<8;		//Limpia la IRQ
+	valor_adc=ADC_RD0;	//Carga el valor de conversion del ADC en binario de 32 bits en la variable global;
+}
+
+void IniciarConversion(void)
+{
+	ADC_CFG|=1<<1;		//Setea el registro para indicar que comience la conversión
+}
+
+//c)función getPeso()
+
+#define SENSIBILIDAD 1		//                    1mV/HG
+
+uint32_t getPeso(void)
+{
+	uint32_t valor_milivolts_adc;
+	uint32_t valor_peso;
+	valor_milivolts_adc=(valor_adc)*3300/(VALOR_MAX);		//Convierte valor en binario del ADC a milivolts
+	valor_peso=(valor_milivolts_adc-1000)/SENSIBILIDAD;		//Convierte a valor en hectogramos
+	return valor_peso;
+}
+
+//Punto 2: Aplicacion de una balanza
+
+//a)Diagrama de estados
+														flag_valor_estable=SI
+					PESO>=20HG(2KG)						SI DURANTE 1 SEGUNDO MANTIENE PESO									PESO==0->vuelve a INICIO y flag_valor_estable=0;
+//|-> INICIO ----------------------------->MOSTRAR_PESO ---------------------------------------->MOSTRAR_PESO_ESTABLE----------------------|
+//|   DISPLAY=OFF							Timer llama a IniciarConversion cada 200ms													   |
+//|											ES decir, medir 5 veces por minuto															   |
+//|----------------------------------------------------------------------------------------------------------------------------------------|
+
+
+//b)Timer
+
+//En el main timer_display es una variable global inicializada en 500, por 500ms teniendo un SysTick configurado en 1ms y
+//En el main timer_muestreador es una variable global inicializada en 200, por 200ms entre cada muestreo, teniendo un SysTick configurado en 1ms:
+//uint32_t timer_display=500
+//uint32_t valor_estable almacena
+//Si valor (variable global) vuelve a 0
+
+#define NO 0
+#define SI 1
+
+void SysTick_Handler(void)
+{
+	static disp_status=ON;
+	static timer_display;
+	timer_muestreador--;
+	if(timer_muestreador==0)
+	{
+		valor=getPeso();
+		timer_muestreador=200;							//Si el timer se venció resetea contador e inicia nueva conversión
+		IniciarConversion();
+	}
+	if(flag_valor_estable==SI||valor==0)				//Si peso vuelve a 0
+	{
+		if(disp_status=ON)
+		{
+			ApagarDisplay();							//Apaga display si esta encendido
+		}
+		flag_valor_estable=NO;							//Vuelve a NO el flag
+	}
+	
+	flag_valor_estable=CompararValores(valor);				//toma los valores de la variable global valor y los compara por 1 segundo)
+	
+	if(valor>=20||flag_valor_estable==SI)				//Si el valor supera los 20KG atiende el display (El encendido inicial se hace desde Maquina De estados)
+	{													
+		if(!flag_valor_estable)					//Si aun no se estabilizo el valor, mantiene el barrido constante al display
+		{
+			BarridoDisplays();
+		}
+		else									//Solo modifica el valor del timer de display cuando recibe el flag_valor_estable
+		{
+			timer_display--;
+			if(timer_display>=0)				
+			{
+				if(disp_status==ON)
+				{
+					BarridoDisplays();			//Solo llama a barrido en valor estable cuando el display está encendido
+				}
+			}
+			else
+			{
+				switch(disp_status)				//Cambia de estado el display y resetea timers de 500 ms para tener frecuencia de parpadeo de 2HZ
+				{
+					case ON: disp_status=OFF;
+							ApagarDisplay();
+							timer_display=500;
+							break;
+					case OFF:disp_status=ON;
+							EncenderDisplay();
+							timer_display=500;
+							break;
+				}
+			}
+		}
+	}
+}
+
+uint8_t CompararValores(uint32_t valor)
+{
+	static uint32_t valor_anterior=0;
+	static uint32_t valor_actual=0;
+	static uint32_t conteo_valores=0;
+	valor_anterior=valor_actual;		//Tomo valor medido antes y lo almaceno
+	valor_actual=valor;					//Tomo el valor actual
+	if(valor_actual==valor_anterior)
+	{
+		conteo_valores++;				//aumento conteo de valores iguales
+	}
+	else
+	{
+		conteo_valores=0;				//reseteo si algun valor difiere
+	}
+	if(conteo_valores>=5)
+	{
+		conteo_valores=0;
+		return SI;						//Devuelve SI si en 5 ciclos se repite el valor
+	}
+	return NO;							//Por default, hasta que se encuentren valores iguales;
+}
+
+//Punto 3: Comunicacion Serie
+
+//a)En el Handler de SysTick se debe agregar en la primera parte lo siguiente:
+//char uint32_t buffer[3] es un buffer global de 3 posiciones para almacenar la cadena a transmitir
+//uint32_t timer_1_segundo es global y inicializa en 1000;
+
+void SysTick_Handler()
+{
+	uint8_t i;
+	if(timer_1_segundo>0)
+	{
+		timer_1_segundo--;
+	}
+	else
+	{
+		if(!flag_valor_estable)
+		{
+			EnviarTrama(0);			//Si no es estable carga un 0 a la trama
+		}
+		else
+		{
+			EnviarTrama((uint8_t)valor_estable);			//Carga Peso a la trama si es estable
+		}
+		timer_segundo=1000;			//Se recarga el timer
+	}
+}
+
+void EnviarTrama(uint8_t valor)
+{
+	uint8_t buffer[3];
+	uint8_t i;
+	buffer[0]='%';
+	buffer[1]=valor;
+	buffer[2]='%';
+	for(i=0;i<3;i++)
+	{
+		PushTx(buffer[i]);			//Carga datos en el buffer de transmisión
+	}
+}
+
+//b)funcion de IRQ de Serie
+
+void UART0_Handler(void)
+{
+	uint32_t iir;
+	int16_t dato;
+	do
+	{
+		iir=U0IIR;
+		if(iir&0x02)				//Si la UART Habilita a transmitir
+		{
+			dato=PopTx();
+			if(dato!=-1)			//Si hay datos para transmitir los manda a la salida de la UART
+			{
+				U0THR=dato;
+			}
+		}
+	}while(!iir&0x01)
+}
+
+//index_tx_in y index_tx_out son variables globales tipo uint8_t, sirven para definir el orden del buffer
+//BUFFER_SIZE define el maximo tamaño del buffer de transmision
+
+int16_t PopTx(void)
+{
+	if(index_tx_in==index_tx_out)		//si no hay datos en fila del buffer retorno -1;
+	{
+		return -1;
+	}
+	else								//si hay retorno el dato
+	{
+		dato=(int16_t)buffer[index_tx_out]; //Levanta el dato del buffer de TX
+		index_tx_out++;
+		index_tx_out%=MAX_BUFFER_SIZE;	//Si se supera el tamaño vuelve a la posición inicial
+	}
+	return dato;
+}
+
+void PushTx(uint8_t dato)
+{
+		buffer[index_tx_in]=dato;		//Toma el dato y lo carga en el buffer de Tx
+		index_tx_in++;
+		index_tx_in%=MAX_BUFFER_SIZE;	//Si se supera el tamaño vuelve a la posición inicial
+}
