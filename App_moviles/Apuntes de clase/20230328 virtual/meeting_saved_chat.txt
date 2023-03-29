@@ -1,0 +1,167 @@
+19:22:10 From Matías Silveiro To Everyone:
+	if - for - while
+19:22:29 From Matías Silveiro To Everyone:
+	https://kotlinlang.org/
+19:22:35 From Humberto Delgado To Everyone:
+	Dart?
+19:23:08 From Matías Silveiro To Everyone:
+	Dart se usa para hacer apps en Flutter! Para Android nativo se usa Java (ya deprecated) y Kotlin
+19:23:22 From Humberto Delgado To Everyone:
+	se parece mucho
+19:23:44 From Matías Silveiro To Everyone:
+	Todos los de alto nivel terminan siendo muy parecidos.. jaja
+19:24:38 From Humberto Delgado To Everyone:
+	si, estoy tratando de aprender flutter también.
+19:26:39 From GONZALO AGUSTIN SFARA To Everyone:
+	perdon, no escuche bien. Cuales son los requisitos de los tps?
+19:34:56 From GONZALO AGUSTIN SFARA To Everyone:
+	ale por esas casualidades seria factible que nos facilites clases grabadas de años anteriores, para ir adelantando un cacho?
+19:35:09 From Matías Silveiro To Everyone:
+	https://developer.android.com/studio
+19:36:23 From Matías Silveiro To Everyone:
+	Fijense si pueden matricularse en esta:	https://aulasvirtuales.frba.utn.edu.ar/course/view.php?id=25732
+19:36:27 From Humberto Delgado To Everyone:
+	la matriculación para el aula
+19:36:30 From Humberto Delgado To Everyone:
+	?
+19:36:38 From Matías Silveiro To Everyone:
+	Tiene pass?
+19:36:46 From Alejandro Dario Sobral To Everyone:
+	Si, tiene pass
+19:36:48 From Javier Santelys To Everyone:
+	Las aplicaciones que hagamos tienen que ser para cross-platform o pueden ser solo para Android?
+19:39:49 From GONZALO AGUSTIN SFARA To Everyone:
+	sería obligatorio entregar las apps en kotlin? o podemos entregarlas en react native,  java o para ios?
+19:40:58 From Alejandro Torres To Everyone:
+	La clave de matriculación del aula virtual cuál sería?
+19:41:08 From Matías Silveiro To Everyone:
+	En un rato resolvemos lo del aula virtual!
+19:42:16 From GONZALO AGUSTIN SFARA To Everyone:
+	depende del mercado
+19:42:35 From GONZALO AGUSTIN SFARA To Everyone:
+	si haces una app que se va a usar en arg Android, te vas a usa y ios
+19:57:16 From GONZALO AGUSTIN SFARA To Everyone:
+	react native, tiene el native en el nombre por marketing? o su rendimiento es realmente tan bueno que puedo llamarse nativo
+19:58:24 From GONZALO AGUSTIN SFARA To Everyone:
+	barbaro
+19:59:59 From GONZALO AGUSTIN SFARA To Everyone:
+	el mercado laboral de mobile a que tecnología se inclina hoy?
+20:00:39 From GONZALO AGUSTIN SFARA To Everyone:
+	perdón, por lo hinchahuevos
+20:02:46 From Matías Silveiro To Everyone:
+	https://developer.android.com/studio	Vayan descargando
+20:02:51 From Matías Silveiro To Everyone:
+	Electric eel, no el canary
+20:03:19 From Javier Santelys To Everyone:
+	Yo tengo el dolphin
+20:03:24 From Javier Santelys To Everyone:
+	Está bien o tengo que actualizar?
+20:03:27 From Matías Silveiro To Everyone:
+	Va perfecto!
+20:03:37 From Matías Silveiro To Everyone:
+	Si podes actualizarlo, genial. Metieron lindos juguetes nuevos. Sino no problema!
+20:03:42 From Javier Santelys To Everyone:
+	DAle
+20:03:51 From Marcelo Terrizzano To Everyone:
+	Yo también Dolphin y preferiría no tocar porque después no me compila nada
+20:03:52 From Marcelo Terrizzano To Everyone:
+	ja
+20:03:57 From Matías Silveiro To Everyone:
+	Reacted to "Yo también Dolphin y..." with 😂
+20:03:57 From Andres Sukanec To Everyone:
+	Donde se ve que version tengo?
+20:04:00 From Andres Sukanec To Everyone:
+	En el about?
+20:04:07 From Matías Silveiro To Everyone:
+	Exacto
+20:04:31 From Matías Silveiro To Everyone:
+	https://www.figma.com/
+20:13:57 From Matías Silveiro To Everyone:
+	Convención para nombre de packages:	https://en.wikipedia.org/wiki/Reverse_domain_name_notation
+20:21:57 From Marcelo Terrizzano To Everyone:
+	Me acaba de pasar intentando robar código, que la librería estaba caida
+20:25:02 From Javier Santelys To Everyone:
+	Como es el tema de debuggear en Android studio?
+20:25:55 From Alejandro Torres To Everyone:
+	En tablet se puede también?
+20:25:58 From Matías Silveiro To Everyone:
+	Sisi!
+20:26:11 From Matías Silveiro To Everyone:
+	Habilitar device para uso de desarrollo:	https://devexperto.com/como-activar-la-depuracion-usb/
+20:37:18 From Matías Silveiro To Everyone:
+	(con el mail de UTN lo tienen gratarola)
+20:46:24 From franco To Everyone:
+	El R seria como el resourses
+20:46:29 From franco To Everyone:
+	la carpeta res
+20:46:41 From Matías Silveiro To Everyone:
+	Claaro
+20:56:09 From Matías Silveiro To Everyone:
+	https://www.vysor.io/
+20:58:49 From Matías Silveiro To Everyone:
+	File -> Settings -> Plugins, y buscan el Copilot en marketplace
+20:59:17 From Matías Silveiro To Everyone:
+	Desp:	Tools -> GitHub Copilot -> Login to GitHub
+21:01:50 From Alejandro Breitman To Everyone:
+	class MainActivity : AppCompatActivity() {
+	
+	     lateinit var label : TextView
+	     lateinit var btnShow : Button
+	
+	     var labelText : String = "Hello World"
+	
+	    override fun onCreate(savedInstanceState: Bundle?) {
+	        super.onCreate(savedInstanceState)
+	        setContentView(R.layout.activity_main)
+	
+	        label = findViewById(R.id.txtLabel)
+	        btnShow = findViewById(R.id.btnShow)
+	
+	        label.text = ""
+	
+	        btnShow.setOnClickListener {
+	            label.text = labelText
+	        }
+	    }
+	
+	}
+21:05:11 From Gianni Mazzeo To Everyone:
+	podrían poner aca que debería hacer cada btn?
+21:05:31 From Alejandro Breitman To Everyone:
+	Mostrar texto, borrar texto, colorear de azul, colorear de rojo
+21:06:55 From Javier Santelys To Everyone:
+	Lo de la tarea pasamos una foto o algo, o es solo para nosotros?
+21:08:30 From Alejandro Breitman To Everyone:
+	Clave de matriculacion : DADM2023
+21:09:28 From Matías Silveiro To Everyone:
+	https://emregurses.medium.com/android-studio-physical-devices-mirroring-6fb07e558c14
+21:09:47 From Matías Silveiro To Everyone:
+	https://aulasvirtuales.frba.utn.edu.ar/course/view.php?id=25732
+21:09:56 From Alejandro Dario Sobral To Everyone:
+	https://aulasvirtuales.frba.utn.edu.ar/enrol/index.php?id=25732
+21:21:48 From Matías Silveiro To Everyone:
+	label.setTextColor(Colors.RED)
+21:21:58 From Javier Santelys To Everyone:
+	Ahí pudé
+21:22:16 From Matías Silveiro To Everyone:
+	Reacted to "Ahí pudé" with 🔥
+21:22:31 From Javier Santelys To Everyone:
+	Cuesta acostumbrarse a los constraints, ahí vi que hay una opción como que te los infiere, que tan bueno es?
+21:24:48 From Matías Silveiro To Everyone:
+	val myLabel = "Hello world!"
+21:26:02 From Matías Silveiro To Everyone:
+	Color.RED
+21:26:16 From martin To Everyone:
+	Donde se configura lo del sdk manager q mostro alejandro antes?
+21:26:47 From martin To Everyone:
+	Ah ya me anduvo igual
+21:27:01 From Gianni Mazzeo To Everyone:
+	Ya lo pude acomodar con nombres y todo
+21:30:25 From Lucas Sidoti To Everyone:
+	Donde es que veo mi celular desde la app?
+21:31:41 From martin To Everyone:
+	En el device manager creo
+21:48:13 From Matías Silveiro To Everyone:
+	https://developer.android.com/courses/kotlin-bootcamp/overview?hl=es-419
+21:49:48 From Matías Silveiro To Everyone:
+	silveirmatias@frba.utn.edu.ar
