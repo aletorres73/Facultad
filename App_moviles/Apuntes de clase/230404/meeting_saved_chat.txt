@@ -1,0 +1,109 @@
+19:15:11 From Fernando Castro Canosa To Everyone:
+	cual es la clave de matriculación
+19:15:16 From Fernando Castro Canosa To Everyone:
+	?
+19:17:24 From Matías Silveiro To Everyone:
+	https://aulasvirtuales.frba.utn.edu.ar/course/view.php?id=25732
+19:17:32 From Matías Silveiro To Everyone:
+	Contraseña:	dadp2023
+19:17:45 From GABRIEL EMILIO GUZMAN ANGLESE To Everyone:
+	Buenas noches profe
+19:19:56 From Alejandro Breitman To Everyone:
+	DADM2023
+20:14:57 From Matías Silveiro To Everyone:
+	Martin! Dale click derecho -> Convert FrameLayout to ConstraintLayout
+20:15:39 From martin To Everyone:
+	Gracias!
+20:18:27 From Javier Santelys To Everyone:
+	Como agregaste la carpeta de navigation?
+20:18:59 From Andres Sukanec To Everyone:
+	id 'androidx.navigation.safeargs.kotlin'
+20:19:13 From martin To Everyone:
+	new directory en res, javier
+20:19:29 From Matías Silveiro To Everyone:
+	Replying to "Como agregaste la ca..."
+	
+	Click derecho sobre "res" -> New -> Android Resource Directory.		Ahi empezas a escribir "navigation" y se te autocompleta
+20:19:58 From Alejandro Breitman To Everyone:
+	buildscript {
+	    repositories {
+	        google()
+	        mavenCentral()
+	        maven { url 'https://jitpack.io' }
+	    }
+	    dependencies {
+	        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3'
+	    }
+	}
+20:20:08 From Alejandro Breitman To Everyone:
+	plugins {
+	    id 'com.android.application'
+	    id 'org.jetbrains.kotlin.android'
+	    id 'androidx.navigation.safeargs.kotlin'
+	}
+20:20:32 From Javier Santelys To Everyone:
+	Replying to "Como agregaste la ca..."
+	
+	No elijo ningún qualifier ¿no?
+20:20:39 From Matías Silveiro To Everyone:
+	Replying to "Como agregaste la ca..."
+	
+	Nono!
+20:22:01 From Javier Santelys To Everyone:
+	Replying to "Como agregaste la ca..."
+	
+	Y el navgraph lo creo como?
+20:22:21 From Matías Silveiro To Everyone:
+	Replying to "Como agregaste la ca..."
+	
+	Click derecho sobre "navigation" -> New -> Navigation resource file
+20:24:52 From martin To Everyone:
+	como agrego el navgraph al activity?
+20:26:58 From Javier Santelys To Everyone:
+	Yo pensé que era al reves
+20:27:25 From Matías Silveiro To Everyone:
+	Muuuuuuy pocas cosas de este estilo saca primero Android, antes que iOS
+20:30:09 From Alejandro Torres To Everyone:
+	Cree un directorio navigation en res pero no me aparece en el explorador
+20:30:14 From Alejandro Torres To Everyone:
+	??
+20:30:36 From Matías Silveiro To Everyone:
+	Chan! A que te referis?
+20:30:42 From Matías Silveiro To Everyone:
+	Si esta vacio, no te va a aparecer el dropdown
+20:31:08 From Matías Silveiro To Everyone:
+	Ojo que tiene que ser un "Android Resource Directory", no un "Directory" a secas
+20:32:18 From Alejandro Torres To Everyone:
+	Sisi Resource Directory, como vacío?
+20:32:51 From Matías Silveiro To Alejandro Torres(Direct Message):
+	Sin ningún archivo adentro! Si no creaste archivos dentro de ese directorio, no te va a aparecer el dropdown. O no te aparece directamente en la vista del proyecto?
+20:33:40 From Alejandro Torres To Matías Silveiro(Direct Message):
+	Sin archivos, no lo veo en la vista del proyecto y ya me dice que hay uno creado
+20:34:41 From Matías Silveiro To Alejandro Torres(Direct Message):
+	Hagamos una cosa, mientras tanto presta atención a lo que queda, y desp te doy una mano!
+20:34:48 From Matías Silveiro To Alejandro Torres(Direct Message):
+	Por este chat no creo poder resolverlo jajaja
+20:36:01 From Alejandro Dario Sobral To Everyone:
+	Es normal que un xml se desaparezca cuando quiero agregarle algo...?
+20:36:12 From Alejandro Dario Sobral To Everyone:
+	Uno de los XML anda joya, el otro desaparece constamentemente
+20:36:17 From Alejandro Dario Sobral To Everyone:
+	constantemente*
+20:36:39 From Matías Silveiro To Everyone:
+	Raaro… Desp lo vemos!
+20:36:45 From Alejandro Dario Sobral To Everyone:
+	Oka, gracias
+20:37:32 From Alejandro Torres To Matías Silveiro(Direct Message):
+	ok dale gracias.
+20:55:11 From Javier Santelys To Everyone:
+	Matias me podés ayudar ahora con cosas del gradle
+20:55:16 From Javier Santelys To Everyone:
+	Que me está dando error en el build
+20:55:19 From Matías Silveiro To Everyone:
+	Sisi! Ahora vemos todos esos inconvenientes
+20:55:46 From Andres Sukanec To Everyone:
+	Yo necesito ver lo de los import para el FragmentDirection
+20:56:02 From Andres Sukanec To Everyone:
+	Lo importe lo del chat pero no me lo tomo
+21:03:30 From Matías Silveiro To Everyone:
+	https://m2.material.io/components/text-fields/android#using-text-fields
