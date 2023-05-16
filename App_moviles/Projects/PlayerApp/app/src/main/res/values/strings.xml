@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PlayerApp</string>
+    <string name="name">Name</string>
+    <string name="team">Team</string>
+</resources>

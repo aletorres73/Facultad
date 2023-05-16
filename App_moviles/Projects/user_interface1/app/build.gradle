@@ -43,7 +43,7 @@ dependencies {
     implementation 'android.arch.lifecycle:viewmodel:1.1.1'
     implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
     implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
-    implementation 'androidx.fragment:fragment:1.5.6'
+    implementation 'androidx.fragment:fragment:1.5.7'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

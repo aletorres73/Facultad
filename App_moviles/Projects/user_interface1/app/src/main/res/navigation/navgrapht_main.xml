@@ -18,5 +18,9 @@
         android:id="@+id/screen2Fragment"
         android:name="com.example.user_interface1.fragments.Screen2Fragment"
         android:label="fragment_screen2"
-        tools:layout="@layout/fragment_screen2" />
+        tools:layout="@layout/fragment_screen2" >
+        <action
+            android:id="@+id/action_screen2Fragment_to_scree1Fragment"
+            app:popUpTo="@id/scree1Fragment" />
+    </fragment>
 </navigation>

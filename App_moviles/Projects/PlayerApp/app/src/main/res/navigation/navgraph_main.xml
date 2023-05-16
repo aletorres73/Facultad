@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navgraph_main"
+    app:startDestination="@id/playerDashboardFragment3">
+    <fragment
+        android:id="@+id/playerDashboardFragment3"
+        android:name="com.example.playerapp.fragments.PlayerDashboardFragment"
+        android:label="fragment_player_dashboard"
+        tools:layout="@layout/fragment_player_dashboard" >
+        <action
+            android:id="@+id/action_playerDashboardFragment3_to_playerDetailFragment2"
+            app:destination="@id/playerDetailFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerDetailFragment2"
+        android:name="com.example.playerapp.fragments.PlayerDetailFragment"
+        android:label="fragment_player_detail"
+        tools:layout="@layout/fragment_player_detail" />
+</navigation>

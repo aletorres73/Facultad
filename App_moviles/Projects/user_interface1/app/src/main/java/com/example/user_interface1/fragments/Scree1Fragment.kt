@@ -3,55 +3,45 @@ package com.example.user_interface1.fragments
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.user_interface1.R
-import com.example.user_interface1.entities.User
+import com.example.user_interface1.entities.UserManager
 
-class Scree1Fragment : Fragment() {
+class Scree1Fragment : Fragment(R.layout.fragment_scree1) {
 
-    lateinit var textLogin: TextView
-    lateinit var inputUser: EditText
-    lateinit var inputPass: EditText
-    lateinit var btnContinue: Button
+    private lateinit var inputUser: EditText
+    private lateinit var inputPass: EditText
+    private lateinit var btnLogin: Button
 
-    lateinit var v: View
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    var users : MutableList<User> = mutableListOf()
+        inputUser = view.findViewById(R.id.inputUser)
+        inputPass = view.findViewById(R.id.inputPass)
+        btnLogin = view.findViewById(R.id.btnLogin)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        btnLogin.setOnClickListener {
+            val email = inputUser.text.toString()
+            val pass = inputPass.text.toString()
 
-        v = inflater.inflate(R.layout.fragment_scree1, container, false)
-
-        textLogin = v.findViewById(R.id.textLogin)
-        inputUser = v.findViewById(R.id.inputUser)
-        inputPass = v.findViewById(R.id.inputPass)
-        btnContinue = v.findViewById(R.id.btnContinue)
-
-        users.add(User(name = "Lio", lastname = "Messi", email = "Lio@scaloneta.com", password = "Lio"))
-        users.add(User(name = "Angel", lastname = "Di Maria", email = "Angel@scaloneta.com", password = "Angel"))
-        users.add(User(name = "Leandro", lastname = "Paredes", email = "Leandro@scaloneta.com", password = "Leandro"))
-        users.add(User(name = "Dibu", lastname = "Martinez", email = "Dibu@scaloneta.com", password = "Dibu"))
-        users.add(User(name = "Papu", lastname = "Gomez", email = "Papu@scaloneta.com", password = "Papu"))
-        users.add(User(name = "Rodrigo", lastname = "De Paul", email = "Rodrigo@scaloneta.com", password = "Rodrigo"))
-        return v
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        btnContinue.setOnClickListener {
-            val action = Scree1FragmentDirections.actionScree1FragmentToScreen2Fragment()
-            findNavController().navigate(action)
-
+            if (email.isEmpty() || pass.isEmpty()) {
+                Toast.makeText(requireContext(), "Ingrese un email y password", Toast.LENGTH_SHORT).show()
+            } else {
+                //val user = users.find { it.email == email && it.password == pass }
+                val user = UserManager.getUsers().find { it.email == email && it.password == pass }
+                if (user != null) {
+                    val action = Scree1FragmentDirections.actionScree1FragmentToScreen2Fragment()
+                    findNavController().navigate(action)
+                } else {
+                    Toast.makeText(requireContext(), "Usuario o password incorrecto", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
-
 }
+
+

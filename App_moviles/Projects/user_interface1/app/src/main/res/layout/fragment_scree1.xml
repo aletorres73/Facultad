@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.Scree1Fragment" >
+    android:background="#5C485CD3"
+    tools:context=".fragments.Scree1Fragment">
+
 
     <Button
-        android:id="@+id/btnContinue"
+        android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="372dp"
-        android:text="Continue"
-        android:textSize="13dp"
+        android:text="@string/login"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.312"
@@ -20,12 +22,20 @@
 
     <TextView
         android:id="@+id/textLogin"
+        style="@android:style/Widget.DeviceDefault.TextView.SpinnerItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:background="#3B3D3F4D"
+        android:clickable="true"
+        android:fontFamily="casual"
+        android:lineSpacingExtra="20sp"
+        android:text="@string/login"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/black"
-        android:textSize="22dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnContinue"
+        android:textSize="22sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.204"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,12 +48,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:ems="10"
-        android:hint="@string/app_name"
+        android:hint="@string/user_email"
         android:inputType="textPersonName"
-        android:text="User"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/textLogin"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/inputPass"
@@ -51,9 +61,10 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/btnContinue"
+        app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputUser" />
+        app:layout_constraintTop_toBottomOf="@+id/inputUser"
+        android:autofillHints="" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
