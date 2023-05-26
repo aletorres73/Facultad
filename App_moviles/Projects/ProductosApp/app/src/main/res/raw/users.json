@@ -1,0 +1,30 @@
+[
+  {
+    "name"    : "Ale1",
+    "lastname": "Torres1",
+    "username": "aletorres1",
+    "email"   : "ale1@gmail.com",
+    "password": "1234"
+  },
+  {
+    "name"    : "Ale2",
+    "lastname": "Torres2",
+    "username": "aletorres2",
+    "email"   : "ale2@gmail.com",
+    "password": "1234"
+  },
+  {
+    "name"    : "Ale3",
+    "lastname": "Torres3",
+    "username": "aletorres3",
+    "email"   : "ale3@gmail.com",
+    "password": "1234"
+  },
+  {
+    "name"    : "Ale3",
+    "lastname": "Torres4",
+    "username": "aletorres4",
+    "email"   : "ale3@gmail.com",
+    "password": "1234"
+  }
+]

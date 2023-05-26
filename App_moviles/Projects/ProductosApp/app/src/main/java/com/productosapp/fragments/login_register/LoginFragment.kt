@@ -12,12 +12,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
-import com.productosapp.activities.MainActivity
 import com.productosapp.activities.SplashActivity
-import com.productosapp.entities.UserManager
-
+import com.productosapp.database.AppDataBase
+import com.productosapp.database.UserDao
 
 class LoginFragment : Fragment() {
+
+    private var db: AppDataBase? = null
+    private var userDao: UserDao? = null
 
     private lateinit var inputUserName: EditText
     private lateinit var inputPass: EditText
@@ -43,6 +45,18 @@ class LoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        db = AppDataBase.getInstance(requireContext())
+        userDao = db?.UserDao()
+        userDao?.loadAllUsers()
+
+        val islogged = userDao?.findUserLogged()
+        if(islogged != null){
+            val contextActivity = requireContext()
+            val intent = Intent(contextActivity, SplashActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+
         btnLogin.setOnClickListener {
             val username = inputUserName.text.toString()
             val pass = inputPass.text.toString()
@@ -55,9 +69,14 @@ class LoginFragment : Fragment() {
                 ).show()
 
             } else {
-                val user =
-                    UserManager.getUsers().find { it.username == username && it.password == pass }
-                if (user != null) {
+
+                val usernameDb = userDao?.loadUserByUsername(username)
+                val passwordDb = userDao?.loadUserByPassword(pass)
+
+                if (usernameDb?.username == username && passwordDb?.password == pass) {
+
+                    userDao?.setLogged(usernameDb.id)
+
                     val contextActivity = requireContext()
                     val intent = Intent(contextActivity, SplashActivity::class.java)
                     startActivity(intent)

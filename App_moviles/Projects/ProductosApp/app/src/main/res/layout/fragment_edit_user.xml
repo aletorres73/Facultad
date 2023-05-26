@@ -25,13 +25,13 @@
 
     <TextView
         android:id="@+id/textView12"
-        android:layout_width="64dp"
-        android:layout_height="24dp"
+        android:layout_width="70dp"
+        android:layout_height="25dp"
         android:layout_marginTop="100dp"
         android:fontFamily="sans-serif-condensed"
         android:text="Nombre:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.031"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,13 +39,13 @@
 
     <TextView
         android:id="@+id/textView13"
-        android:layout_width="65dp"
-        android:layout_height="22dp"
+        android:layout_width="80dp"
+        android:layout_height="29dp"
         android:layout_marginTop="44dp"
         android:fontFamily="sans-serif-condensed"
         android:text="Apellido:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.023"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,13 +53,13 @@
 
     <TextView
         android:id="@+id/textView14"
-        android:layout_width="141dp"
-        android:layout_height="24dp"
+        android:layout_width="155dp"
+        android:layout_height="51dp"
         android:layout_marginTop="48dp"
         android:fontFamily="sans-serif-condensed"
         android:text="Nombre de usuario:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.029"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
         android:fontFamily="sans-serif-condensed"
         android:text="E-Mail:"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="18dp"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.022"
@@ -94,56 +94,55 @@
         app:layout_constraintVertical_bias="0.62" />
 
     <EditText
-        android:id="@+id/editName"
+        android:id="@+id/inputNameEdit"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="88dp"
-        android:hint="@string/nombre"
-        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
+        android:ems="10"
+        android:hint="Nombre"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/textView12"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.309"
-        app:layout_constraintStart_toEndOf="@+id/textView12"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/editEmail"
+        android:id="@+id/inputLastNameEdit"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="@string/e_mail"
+        android:hint="Apellido"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/textView13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputNameEdit"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/inputUserNameEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:hint="Usuario"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="@+id/textView14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputLastNameEdit"
+        app:layout_constraintVertical_bias="0.8" />
+
+    <EditText
+        android:id="@+id/inputEmailEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Correo"
         android:inputType="textEmailAddress"
-        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.669"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editUserName"
+        app:layout_constraintTop_toBottomOf="@+id/inputUserNameEdit"
         app:layout_constraintVertical_bias="0.039" />
-
-    <EditText
-        android:id="@+id/editUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Nombre de usuario"
-        android:inputType="textPersonName"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.669"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editLastName" />
-
-    <EditText
-        android:id="@+id/editLastName"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:hint="@string/apellido"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.309"
-        app:layout_constraintStart_toEndOf="@+id/textView13"
-        app:layout_constraintTop_toBottomOf="@+id/editName" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

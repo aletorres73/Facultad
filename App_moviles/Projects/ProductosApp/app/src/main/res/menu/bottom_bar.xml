@@ -10,4 +10,8 @@
         android:id="@+id/userFragment"
         android:icon="@android:drawable/ic_menu_myplaces"
         android:title="Usuario" />
+    <item
+        android:id="@+id/createProductFragment2"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Crear Producto" />
 </menu>

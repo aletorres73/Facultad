@@ -11,8 +11,13 @@ import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.activities.LoginActivity
+import com.productosapp.database.AppDataBase
+import com.productosapp.database.UserDao
 
 class UserFragment : Fragment() {
+
+    private var db: AppDataBase? = null
+    private var userDao: UserDao? = null
 
     lateinit var v : View
 
@@ -30,13 +35,13 @@ class UserFragment : Fragment() {
     ): View? {
         v = inflater.inflate(R.layout.fragment_user, container, false)
 
-        txtName = v.findViewById(R.id.editName)
-        txtLastName = v.findViewById(R.id.editLastName)
-        txtUserName = v.findViewById(R.id.txtUserName)
-        txtEmail = v.findViewById(R.id.txtEmail)
-        txtPasword = v.findViewById(R.id.txtPasword)
-        btnEditUser = v.findViewById(R.id.btnUpdatetUser)
-        btnCloseSesion = v.findViewById(R.id.btnCloseSesion)
+        txtName         = v.findViewById(R.id.editName)
+        txtLastName     = v.findViewById(R.id.editLastName)
+        txtUserName     = v.findViewById(R.id.txtUserName)
+        txtEmail        = v.findViewById(R.id.txtEmail)
+        txtPasword      = v.findViewById(R.id.txtPasword)
+        btnEditUser     = v.findViewById(R.id.btnUpdatetUser)
+        btnCloseSesion  = v.findViewById(R.id.btnCloseSesion)
 
         return v
     }
@@ -44,8 +49,23 @@ class UserFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        db = AppDataBase.getInstance(requireContext())
+        userDao = db?.UserDao()
+        userDao?.loadAllUsers()
+
+        val userLogged = userDao?.findUserLogged()
+
+        if(userLogged !=null){
+            txtName.text        = userLogged.name
+            txtLastName.text    = userLogged.lastname
+            txtUserName.text    = userLogged.username
+            txtEmail.text       = userLogged.email
+
+        }
+
         btnCloseSesion.setOnClickListener {
-            //falta limpiar el usuario logeado
+
+            userDao?.clearLogged(userLogged?.id)
 
             val contextActivity = requireContext()
             val intent = Intent(contextActivity, LoginActivity::class.java)

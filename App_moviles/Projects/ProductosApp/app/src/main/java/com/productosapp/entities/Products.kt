@@ -1,37 +1,53 @@
 package com.productosapp.entities
 
-class ProductManager {
-    val products = mutableListOf<Products>()
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-    init {
-        products.addAll(listOf(
-//            Products(item = "Termo", brand = "Kanson" , model = "1.3L", costprice = 6400, sellingprice = 8400),
-//            Products(item = "Termo", brand = "Kanson" , model = "1L"  , costprice = 6000, sellingprice = 8000),
-//            Products(item = "Termo", brand = "Peabody", model = "Eléctrico", costprice = 22100, sellingprice = 25100),
-//            Products(item = "Horno", brand = "Axel" , model = "Standard", costprice = 19400, sellingprice = 22400),
-//            Products(item = "Termo", brand = "Kanson" , model = "1.3L", costprice = 6400, sellingprice = 8400),
-//            Products(item = "Termo", brand = "Kanson" , model = "1L"  , costprice = 6000, sellingprice = 8000),
-//            Products(item = "Termo", brand = "Peabody", model = "Eléctrico", costprice = 22100, sellingprice = 25100),
-//            Products(item = "Horno", brand = "Axel" , model = "Standard", costprice = 19400, sellingprice = 22400),
-            Products(item = "", brand = "" , model = "", costprice = 0, sellingprice = 0)
-
-        ).sortedWith(compareBy({ it.item.isEmpty() }, { it.item })))
-    }
-
-    fun getProductList(): MutableList<Products> {
-        return products }
-
-    fun addProduct(product: Products) {
-        products.add(product) }
-
-    fun removeProducts(product: Products) {
-        products.remove(product) }
-}
-
+@Entity(tableName = "products")
 class Products(
-    var item:           String,
-    var brand:          String,
-    var model:          String,
-    var costprice:      Int,
-    var sellingprice:   Int,
-    )
+    id:          Int,
+    item:        String,
+    detail:      Int,
+    brand:       String,
+    model:       String,
+    costprice:   Int,
+    sellingprice:Int,
+    imageuri:    String){
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo("id")
+    var id: Int
+
+    @ColumnInfo("item")
+    var item: String
+
+    @ColumnInfo("brand")
+    var brand: String
+
+    @ColumnInfo("model")
+    var model: String
+
+    @ColumnInfo("costprice")
+    var costprice: Int
+
+    @ColumnInfo("sellingprice")
+    var sellingprice: Int
+
+    @ColumnInfo("imageuri")
+    var imageuri: String
+
+    @ColumnInfo("detail")
+    var detail: Int
+
+    init{
+        this.id           = id
+        this.item         = item
+        this.detail       = detail
+        this.brand        = brand
+        this.model        = model
+        this.costprice    = costprice
+        this.sellingprice = sellingprice
+        this.imageuri    =  imageuri
+    }
+}

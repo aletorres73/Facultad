@@ -9,16 +9,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.adapters.GalleryAdapter
+import com.productosapp.database.AppDataBase
+import com.productosapp.database.ProductsDao
 import com.productosapp.entities.Image
-import com.productosapp.entities.ProductManager
 import com.productosapp.entities.Products
 
 class CreateProductFragment : Fragment() {
+
+    private var db: AppDataBase? = null
+    private var productDao: ProductsDao? = null
 
     lateinit var v: View
     lateinit var btnLoadImage   : Button
@@ -28,7 +33,6 @@ class CreateProductFragment : Fragment() {
     lateinit var recyclerGallery: RecyclerView
 
     private val imageList =              mutableListOf<Image>()
-    var productRepository :              ProductManager = ProductManager()
 
     lateinit var newProduct             :Products
     lateinit var inputItemproduct       :TextView
@@ -59,8 +63,10 @@ class CreateProductFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        db = AppDataBase.getInstance(requireContext())
+        productDao = db?.ProductsDao()
+        productDao?.loadAllProducts()
 
-        var productList = productRepository.getProductList()
 
         btnLoadImage.setOnClickListener {
             // Crear intent para seleccionar imagen
@@ -70,9 +76,11 @@ class CreateProductFragment : Fragment() {
         }
 
         btnMakeProduct.setOnClickListener {
+
             newProduct= makeNewProduct()
-            productList.add(newProduct)
+            productDao?.insertProduct(newProduct)
             Snackbar.make(v, "Producto agregado a la lista", Snackbar.LENGTH_SHORT).show()
+            findNavController().popBackStack()
         }
 
         // Configurar el adaptador de la lista
@@ -84,17 +92,26 @@ class CreateProductFragment : Fragment() {
     }
 
     private fun makeNewProduct(): Products {
-        var newItemproduct        = inputItemproduct.text
-        var newBrandproduct       = inputBrandproduct.text
-        var newModelProdut        = inputModelProdut.text
-        var newCostPricePoduct    = inputCostPricePoduct.text
-        var newSellingPricePoduct = inputSellingPricePoduct.text
 
-        return Products(newItemproduct.toString(),
+        val newId                 = 0
+        val newItemproduct        = inputItemproduct.text
+        val newDetail             = 0
+        val newBrandproduct       = inputBrandproduct.text
+        val newModelProdut        = inputModelProdut.text
+        val newCostPricePoduct    = inputCostPricePoduct.text
+        val newSellingPricePoduct = inputSellingPricePoduct.text
+        val newImageUri           = galleryAdapter.images[0].uri
+
+        return Products(
+                        newId,
+                        newItemproduct.toString(),
+                        newDetail,
                         newBrandproduct.toString(),
                         newModelProdut.toString(),
                         newCostPricePoduct.toString().toInt(),
-                        newSellingPricePoduct.toString().toInt())
+                        newSellingPricePoduct.toString().toInt(),
+                        newImageUri.toString()
+            )
 
     }
 

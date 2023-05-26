@@ -1,6 +1,5 @@
 package com.productosapp.fragments.home
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,15 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.adapters.ProductAdapter
-import com.productosapp.entities.ProductManager
-import com.productosapp.entities.Products
+import com.productosapp.database.AppDataBase
+import com.productosapp.database.ProductsDao
 
 class HomeFragment : Fragment() {
+
+    private var db: AppDataBase? = null
+    private var productDao: ProductsDao? = null
 
     lateinit var v          : View
     lateinit var recProduct : RecyclerView
     lateinit var adapter    : ProductAdapter
-    var productRepository   : ProductManager = ProductManager()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,20 +37,22 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        db = AppDataBase.getInstance(requireContext())
+        productDao = db?.ProductsDao()
+        productDao?.loadAllProducts()
+
         // Obtener la lista de productos
-        val productList = productRepository.getProductList()
+        val productList = productDao?.loadAllProducts()
 
 
         // Configurar el adaptador de la lista
         adapter = ProductAdapter(productList) { position ->
-            if (position ==  adapter.itemCount - 1) {
-                val action = HomeFragmentDirections.actionHomeFragmentToCreateProductFragment22()
-                findNavController().navigate(action)
+            if (position !=  adapter.itemCount - 1) {
 
-            } else {
-                // Si se selecciona un producto existente, mostrar un Snackbar con su información
-                Snackbar.make(v, "click en ${productRepository.products[position].item}: " +
-                        productRepository.products[position].model, Snackbar.LENGTH_LONG).show()
+                productDao?.setDetail(productList?.get(position)?.id!!)
+
+                val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment()
+                findNavController().navigate(action)
             }
         }
 

@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
                     navHostFragment.navController.navigate(R.id.userFragment)
                     true
                 }
+                R.id.createProductFragment2 -> {
+                    navHostFragment.navController.navigate(R.id.createProductFragment2)
+                    true
+                }
                 // Agrega más casos para los otros elementos de la barra
                 else -> false
             }
