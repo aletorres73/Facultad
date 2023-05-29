@@ -1,0 +1,15 @@
+* C:\users\atorres\Mis Documentos\Facultad\TC2\JupyterNotebook\trabajo_semanal3_torres\pasabjos2.asc
+R1 Vo N002 {1/(2*w0)}
+C1 Vo 0 {C}
+L1 Vi N001 {1/(2*w0*w0*C)}
+R2 N001 0 {1/(2*w0*C)}
+C2 N001 0 {C}
+XU1 N001 N002 N002 opamp Aol=100K GBW=10Meg
+V1 Vi 0 SINE(0 10m 1k) AC 10m
+.param C=100n
+.param w0=9425
+.ac dec 10 0.1 100k
+.inc opamp.sub
+* Implementación pasabajos orden 3.\nDesnormalizado a w0=9425 rad/seg
+.backanno
+.end
