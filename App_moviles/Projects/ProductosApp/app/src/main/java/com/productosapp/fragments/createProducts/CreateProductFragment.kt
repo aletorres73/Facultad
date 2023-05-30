@@ -15,6 +15,7 @@ import com.productosapp.R
 import com.productosapp.database.AppDataBase
 import com.productosapp.database.ImageDao
 import com.productosapp.database.ProductsDao
+import com.productosapp.database.UserDao
 import com.productosapp.entities.Products
 
 class CreateProductFragment : Fragment() {
@@ -22,6 +23,7 @@ class CreateProductFragment : Fragment() {
     private var db: AppDataBase? = null
     private var productDao: ProductsDao? = null
     private var imageDao  : ImageDao? = null
+    private var userDao   : UserDao? = null
 
     lateinit var v: View
     lateinit var btnLoadImage   : Button
@@ -64,6 +66,10 @@ class CreateProductFragment : Fragment() {
         imageDao = db?.ImageDao()
         imageDao?.loadAllImages()
 
+        userDao =db?.UserDao()
+        userDao?.loadAllUsers()
+
+
 
 
         btnLoadImage.setOnClickListener {
@@ -103,16 +109,40 @@ class CreateProductFragment : Fragment() {
 
         btnMakeProduct.setOnClickListener {
 
-            newProduct= makeNewProduct()
-            productDao?.insertProduct(newProduct)
-            Snackbar.make(v, "Producto agregado a la lista", Snackbar.LENGTH_SHORT).show()
-            findNavController().popBackStack()
+            if(inputItemproduct.text.isEmpty())
+            {
+                Snackbar.make(v, "Ingrese un item", Snackbar.LENGTH_SHORT).show()
+            }
+            if(inputBrandproduct.text.isEmpty())
+            {
+                Snackbar.make(v, "Ingrese una marca", Snackbar.LENGTH_SHORT).show()
+            }
+            if(inputModelProdut.text.isEmpty())
+            {
+                Snackbar.make(v, "Ingrese un modelo", Snackbar.LENGTH_SHORT).show()
+            }
+            if(inputCostPricePoduct.text.isEmpty())
+            {
+                Snackbar.make(v, "Ingrese un precio de costo", Snackbar.LENGTH_SHORT).show()
+            }
+            if(inputSellingPricePoduct.text.isEmpty())
+            {
+                Snackbar.make(v, "Ingrese un precio de venta", Snackbar.LENGTH_SHORT).show()
+            }
+            else{
+                var user= userDao?.findUserLogged()
+                newProduct= makeNewProduct(user!!.id)
+                productDao?.insertProduct(newProduct)
+                Snackbar.make(v, "Producto agregado a la lista", Snackbar.LENGTH_SHORT).show()
+                findNavController().popBackStack()
+            }
+
         }
     }
 
-    private fun makeNewProduct(): Products {
+    private fun makeNewProduct(userid : Int): Products {
 
-        val newId                 = 0
+        val newId                 = userid
         val newItemproduct        = inputItemproduct.text
         val newDetail             = 0
         val newBrandproduct       = inputBrandproduct.text

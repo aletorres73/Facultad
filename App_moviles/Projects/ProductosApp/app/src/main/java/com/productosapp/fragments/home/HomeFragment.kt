@@ -13,11 +13,13 @@ import com.productosapp.R
 import com.productosapp.adapters.ProductAdapter
 import com.productosapp.database.AppDataBase
 import com.productosapp.database.ProductsDao
+import com.productosapp.database.UserDao
 
 class HomeFragment : Fragment() {
 
     private var db: AppDataBase? = null
     private var productDao: ProductsDao? = null
+    private var userDao: UserDao? = null
 
     lateinit var v          : View
     lateinit var recProduct : RecyclerView
@@ -40,10 +42,12 @@ class HomeFragment : Fragment() {
         db = AppDataBase.getInstance(requireContext())
         productDao = db?.ProductsDao()
         productDao?.loadAllProducts()
+        userDao = db?.UserDao()
+        userDao?.loadAllUsers()
 
         // Obtener la lista de productos
-        val productList = productDao?.loadAllProducts()
-
+        val user = userDao?.findUserLogged()
+        val productList = productDao?.loadProductById(user!!.id)
 
         // Configurar el adaptador de la lista
         adapter = ProductAdapter(productList) { position ->

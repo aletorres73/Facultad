@@ -96,6 +96,7 @@ class ProductAdapter(
     }
 
     override fun onBindViewHolder(holder: ProductHolder, position: Int) {
+        var id =
         if (position < (itemCount + 1)) {
             holder.setItem(productlist?.get(position)?.item!!)
             holder.setBrand(productlist?.get(position)?.brand!!)
