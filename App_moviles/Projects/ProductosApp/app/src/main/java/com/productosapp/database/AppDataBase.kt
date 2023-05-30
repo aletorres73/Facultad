@@ -8,7 +8,7 @@ import com.productosapp.entities.Image
 import com.productosapp.entities.Products
 import com.productosapp.entities.User
 
-@Database(entities =[User::class , Products::class, Image::class], version = 6, exportSchema = false)
+@Database(entities =[User::class , Products::class, Image::class], version = 5, exportSchema = false)
 abstract class AppDataBase: RoomDatabase() {
 
     abstract fun UserDao(): UserDao

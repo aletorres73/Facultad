@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
 
         // Configurar el adaptador de la lista
         adapter = ProductAdapter(productList) { position ->
-            if (position !=  adapter.itemCount - 1) {
+            if (position !=  adapter.itemCount + 1) {
 
                 productDao?.setDetail(productList?.get(position)?.id!!)
 
