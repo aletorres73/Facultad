@@ -34,6 +34,8 @@ interface ProductsDao{
 
     @Query("SELECT * FROM products WHERE detail = 1")
     fun findProductDetail(): Products?
+    @Query("SELECT * FROM products WHERE detail = 1")
+    fun getImageUrl(): String
 }
 
 
