@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.productosapp.R
 import com.productosapp.entities.Products
 
@@ -54,7 +55,9 @@ class ProductAdapter(
         fun setImage(image: String)
         {
             val imageProductItem: ImageView = view.findViewById(R.id.imageProductItem)
-            imageProductItem.setImageURI(image.toUri())
+            Glide.with(imageProductItem.context)
+                .load(image)
+                .into(imageProductItem)
         }
 
         fun getCard(): CardView {
@@ -93,13 +96,14 @@ class ProductAdapter(
     }
 
     override fun onBindViewHolder(holder: ProductHolder, position: Int) {
-        if (position < (itemCount - 1)) {
+        var id =
+        if (position < (itemCount + 1)) {
             holder.setItem(productlist?.get(position)?.item!!)
             holder.setBrand(productlist?.get(position)?.brand!!)
             holder.setModel(productlist?.get(position)?.model!!)
             holder.setCostPrice(productlist?.get(position)?.costprice!!)
             holder.setSellPrice(productlist?.get(position)?.sellingprice!!)
-            //holder.setImage(productlist?.get(position)?.imageuri!!)
+            holder.setImage(productlist?.get(position)?.imageuri!!)
             holder.getCard().setOnClickListener {
                 //lo que se quiera hacer cuando se hace click
                 onClick(position) // ejecuta la función onClick que se la pasa una position

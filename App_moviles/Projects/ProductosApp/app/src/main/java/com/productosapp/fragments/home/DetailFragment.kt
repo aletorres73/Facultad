@@ -6,8 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.database.AppDataBase
 import com.productosapp.database.ProductsDao
@@ -23,7 +26,7 @@ class DetailFragment : Fragment() {
     lateinit var vaModelPoduct   : TextView
     lateinit var valCostPrice    : TextView
     lateinit var valSellingPrice : TextView
-    lateinit var imageDetail : TextView
+    lateinit var imageDetail     : ImageView
     lateinit var btnRemoveProduct : TextView
 
     override fun onCreateView(
@@ -36,7 +39,7 @@ class DetailFragment : Fragment() {
         vaModelPoduct   = v.findViewById(R.id.vaModelPoduct)
         valCostPrice    = v.findViewById(R.id.valCostPrice)
         valSellingPrice = v.findViewById(R.id.valSellingPrice)
-        //imageDetail     = v.findViewById(R.id.imageDetail)
+        imageDetail     = v.findViewById(R.id.imageDetail)
         btnRemoveProduct     = v.findViewById(R.id.btnRemoveProduct)
 
 
@@ -50,7 +53,7 @@ class DetailFragment : Fragment() {
         productDao = db?.ProductsDao()
         productDao?.loadAllProducts()
 
-        var productDetail = productDao?.findProductDetail()
+        val productDetail = productDao?.findProductDetail()
 
         if(productDetail != null){
 
@@ -60,13 +63,16 @@ class DetailFragment : Fragment() {
             valCostPrice.text    = productDetail?.costprice?.toInt().toString()
             valSellingPrice.text = productDetail?.sellingprice?.toInt().toString()
 
-
+            Glide.with(this)
+                .load(productDao?.getImageUrl())
+                .into(imageDetail)
         }
 
-//        btnRemoveProduct.setOnClickListener{
-//            productDao?.delete(productDetail)
-//            findNavController().popBackStack()
-//        }
+        btnRemoveProduct.setOnClickListener{
+            productDao?.delete(productDetail)
+            Snackbar.make(v, "Producto eliminado...", Snackbar.LENGTH_SHORT).show()
+            findNavController().popBackStack()
+        }
 
     }
 

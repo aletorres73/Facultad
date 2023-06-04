@@ -21,10 +21,10 @@ interface ProductsDao{
     fun delete(user: Products?)
 
     @Query("SELECT * FROM products WHERE id = :id")
-    fun loadProductById(id: Int):Products?
+    fun loadProductById(id: Int):MutableList<Products?>?
 
     @Query("SELECT * FROM products WHERE brand = :brand")
-    fun loadUserByBrand(brand: String):Products?
+    fun loadProductByBrand(brand: String):Products?
 
     @Query("UPDATE products SET detail = 1 WHERE id = :productId")
     fun setDetail(productId: Int)
@@ -34,6 +34,9 @@ interface ProductsDao{
 
     @Query("SELECT * FROM products WHERE detail = 1")
     fun findProductDetail(): Products?
+    @Query("SELECT imageuri FROM products WHERE detail = 1")
+    fun getImageUrl(): String?
+
 }
 
 
