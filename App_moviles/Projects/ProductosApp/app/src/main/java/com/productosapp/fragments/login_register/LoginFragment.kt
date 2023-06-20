@@ -10,23 +10,22 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.activities.SplashActivity
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.UserDao
 
 class LoginFragment : Fragment() {
 
-    private var db: AppDataBase? = null
-    private var userDao: UserDao? = null
+    private lateinit var inputUserName  : EditText
+    private lateinit var inputPass      : EditText
+    private lateinit var btnLogin       : Button
+    private lateinit var btnRegister    : Button
 
-    private lateinit var inputUserName: EditText
-    private lateinit var inputPass: EditText
-    private lateinit var btnLogin: Button
-    private lateinit var btnRegister: Button
+    private lateinit var v              : View
 
-    private lateinit var v: View
+    private lateinit var viewModel      : LoginViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,40 +41,34 @@ class LoginFragment : Fragment() {
         return v
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(LoginViewModel::class.java)
 
-        db = AppDataBase.getInstance(requireContext())
-        userDao = db?.UserDao()
-        userDao?.loadAllUsers()
+        viewModel.instanceDataBase(requireContext())
 
-        val islogged = userDao?.findUserLogged()
-        if(islogged != null){
-            val contextActivity = requireContext()
-            val intent = Intent(contextActivity, SplashActivity::class.java)
+        if (viewModel.findUserLogged()) {
+            val intent = Intent(requireContext(), SplashActivity::class.java)
             startActivity(intent)
             requireActivity().finish()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         btnLogin.setOnClickListener {
-            val username = inputUserName.text.toString()
-            val pass = inputPass.text.toString()
+            viewModel.username.value = inputUserName.text.toString()
+            viewModel.password.value = inputPass.text.toString()
 
-            if (username.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Ingrese un usuario y password",
+            if (viewModel.isLoginEmpty()) {
+                Toast.makeText(requireContext(),"Ingrese un usuario y password",
                     Toast.LENGTH_SHORT
                 ).show()
 
             } else {
 
-                val usernameDb = userDao?.loadUserByUsername(username)
-                val passwordDb = userDao?.loadUserByPassword(pass)
-
-                if (usernameDb?.username == username && passwordDb?.password == pass) {
-
-                    userDao?.setLogged(usernameDb.id)
+                if (viewModel.isLoginOk()) {
 
                     val contextActivity = requireContext()
                     val intent = Intent(contextActivity, SplashActivity::class.java)
@@ -83,12 +76,9 @@ class LoginFragment : Fragment() {
                     requireActivity().finish()
 
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Usuario o password incorrecto",
+                    Toast.makeText(requireContext(), "Usuario o password incorrecto",
                         Toast.LENGTH_SHORT
                     ).show()
-
                 }
             }
         }
