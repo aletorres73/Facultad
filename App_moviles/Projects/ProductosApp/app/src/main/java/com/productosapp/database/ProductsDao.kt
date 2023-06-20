@@ -36,7 +36,10 @@ interface ProductsDao{
     fun findProductDetail(): Products?
     @Query("SELECT imageuri FROM products WHERE detail = 1")
     fun getImageUrl(): String?
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/product2
 }
 
 
