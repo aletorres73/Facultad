@@ -16,9 +16,13 @@ import com.productosapp.database.AppDataBase
 import com.productosapp.database.ImageDao
 import com.productosapp.database.ProductsDao
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.productosapp.database.UserDao
 =======
 >>>>>>> origin/product2
+=======
+import com.productosapp.database.UserDao
+>>>>>>> origin/product2.2
 import com.productosapp.entities.Products
 
 class CreateProductFragment : Fragment() {
@@ -27,9 +31,13 @@ class CreateProductFragment : Fragment() {
     private var productDao: ProductsDao? = null
     private var imageDao  : ImageDao? = null
 <<<<<<< HEAD
+<<<<<<< HEAD
     private var userDao   : UserDao? = null
 =======
 >>>>>>> origin/product2
+=======
+    private var userDao   : UserDao? = null
+>>>>>>> origin/product2.2
 
     lateinit var v: View
     lateinit var btnLoadImage   : Button
@@ -73,12 +81,18 @@ class CreateProductFragment : Fragment() {
         imageDao?.loadAllImages()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/product2.2
         userDao =db?.UserDao()
         userDao?.loadAllUsers()
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> origin/product2
+=======
+>>>>>>> origin/product2.2
 
 
         btnLoadImage.setOnClickListener {
