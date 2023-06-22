@@ -24,6 +24,9 @@ class LoginFragment : Fragment() {
 
     private lateinit var v              : View
 
+    companion object{
+        fun newInstance() = LoginFragment()
+    }
     private lateinit var viewModel      : LoginViewModel
 
 
@@ -34,9 +37,9 @@ class LoginFragment : Fragment() {
         v = inflater.inflate(R.layout.fragment_login, container, false)
 
         inputUserName = v.findViewById(R.id.inputUserName)
-        inputPass = v.findViewById(R.id.inputPass)
-        btnLogin = v.findViewById(R.id.btnLogin)
-        btnRegister = v.findViewById(R.id.btnRegister)
+        inputPass     = v.findViewById(R.id.inputPass)
+        btnLogin      = v.findViewById(R.id.btnLogin)
+        btnRegister   = v.findViewById(R.id.btnRegister)
 
         return v
     }
@@ -57,9 +60,11 @@ class LoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+
         btnLogin.setOnClickListener {
             viewModel.username.value = inputUserName.text.toString()
             viewModel.password.value = inputPass.text.toString()
+            viewModel.loadUser()
 
             if (viewModel.isLoginEmpty()) {
                 Toast.makeText(requireContext(),"Ingrese un usuario y password",

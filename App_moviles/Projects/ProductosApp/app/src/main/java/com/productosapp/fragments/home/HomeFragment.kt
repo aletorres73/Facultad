@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,17 +15,18 @@ import com.productosapp.adapters.ProductAdapter
 import com.productosapp.database.AppDataBase
 import com.productosapp.database.ProductsDao
 import com.productosapp.database.UserDao
+import com.productosapp.fragments.login_register.LoginFragment
 
 class HomeFragment : Fragment() {
-
-    private var db: AppDataBase? = null
-    private var productDao: ProductsDao? = null
-    private var userDao: UserDao? = null
 
     lateinit var v          : View
     lateinit var recProduct : RecyclerView
     lateinit var adapter    : ProductAdapter
 
+    companion object{
+        fun newInstance() = LoginFragment()
+    }
+    private lateinit var viewModel : HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,25 +38,28 @@ class HomeFragment : Fragment() {
         return v
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(HomeViewModel::class.java)
+        viewModel.instanceDataBase(requireContext())
+    }
+
     override fun onStart() {
         super.onStart()
 
-        db = AppDataBase.getInstance(requireContext())
-        productDao = db?.ProductsDao()
-        productDao?.loadAllProducts()
-        userDao = db?.UserDao()
-        userDao?.loadAllUsers()
-
-        // Obtener la lista de productos
-        val user = userDao?.findUserLogged()
-        val productList = productDao?.loadProductById(user!!.id)
+        val user = viewModel.getuserProduct()
+        val productList = viewModel.getListProduct(user!!)
 
         // Configurar el adaptador de la lista
         adapter = ProductAdapter(productList) { position ->
             if (position !=  adapter.itemCount + 1) {
 
-                productDao?.setDetail(productList?.get(position)?.id!!)
-
+                if (productList != null) {
+                    viewModel.setDetailProduct(productList[position]!!)
+                }
+                else{
+                    Snackbar.make(v, "Lista de productos nula...", Snackbar.LENGTH_SHORT).show()
+                }
                 val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment()
                 findNavController().navigate(action)
             }

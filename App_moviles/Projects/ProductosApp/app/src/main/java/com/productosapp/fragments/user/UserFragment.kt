@@ -8,16 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.activities.LoginActivity
+import com.productosapp.activities.SplashActivity
 import com.productosapp.database.AppDataBase
 import com.productosapp.database.UserDao
+import com.productosapp.fragments.login_register.LoginFragment
+import com.productosapp.fragments.login_register.LoginViewModel
 
 class UserFragment : Fragment() {
-
-    private var db: AppDataBase? = null
-    private var userDao: UserDao? = null
 
     lateinit var v : View
 
@@ -28,6 +29,11 @@ class UserFragment : Fragment() {
     lateinit var txtPasword     : TextView
     lateinit var btnEditUser    : Button
     lateinit var btnCloseSesion : Button
+
+    companion object{
+        fun newInstance() = LoginFragment()
+    }
+    private lateinit var viewModel: UserViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,14 +52,18 @@ class UserFragment : Fragment() {
         return v
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+
+        viewModel.instanceDataBase(requireContext())
+
+    }
+
     override fun onStart() {
         super.onStart()
 
-        db = AppDataBase.getInstance(requireContext())
-        userDao = db?.UserDao()
-        userDao?.loadAllUsers()
-
-        val userLogged = userDao?.findUserLogged()
+        val userLogged = viewModel.getUserLogged()
 
         if(userLogged !=null){
             txtName.text        = userLogged.name
@@ -65,7 +75,7 @@ class UserFragment : Fragment() {
 
         btnCloseSesion.setOnClickListener {
 
-            userDao?.clearLogged(userLogged?.id)
+            viewModel.clearUserLogged(userLogged!!.id)
 
             val contextActivity = requireContext()
             val intent = Intent(contextActivity, LoginActivity::class.java)

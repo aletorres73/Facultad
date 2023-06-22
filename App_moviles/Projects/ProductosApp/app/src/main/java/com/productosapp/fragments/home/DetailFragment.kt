@@ -12,13 +12,11 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.ProductsDao
+import com.productosapp.fragments.login_register.LoginFragment
+
 
 class DetailFragment : Fragment() {
 
-    private var db: AppDataBase? = null
-    private var productDao: ProductsDao? = null
 
     lateinit var v: View
     lateinit var valItemProduct  : TextView
@@ -27,54 +25,62 @@ class DetailFragment : Fragment() {
     lateinit var valCostPrice    : TextView
     lateinit var valSellingPrice : TextView
     lateinit var imageDetail     : ImageView
-    lateinit var btnRemoveProduct : TextView
+    lateinit var btnRemoveProduct: TextView
+
+    companion object{
+        fun newInstance() = LoginFragment()
+    }
+    private lateinit var viewModel : DetailViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         v= inflater.inflate(R.layout.fragment_detail, container, false)
+
         valItemProduct  = v.findViewById(R.id.valItemProduct)
         valBrandProduct = v.findViewById(R.id.valBrandProduct)
         vaModelPoduct   = v.findViewById(R.id.vaModelPoduct)
         valCostPrice    = v.findViewById(R.id.valCostPrice)
         valSellingPrice = v.findViewById(R.id.valSellingPrice)
         imageDetail     = v.findViewById(R.id.imageDetail)
-        btnRemoveProduct     = v.findViewById(R.id.btnRemoveProduct)
-
+        btnRemoveProduct= v.findViewById(R.id.btnRemoveProduct)
 
         return v
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(DetailViewModel::class.java)
+        viewModel.instanceDataBase(requireContext())
+    }
+
     override fun onStart() {
         super.onStart()
-
-        db = AppDataBase.getInstance(requireContext())
-        productDao = db?.ProductsDao()
-        productDao?.loadAllProducts()
-
-        val productDetail = productDao?.findProductDetail()
-
+        val productDetail = viewModel.getProductDetail()
         if(productDetail != null){
 
-            valItemProduct.text  = productDetail?.item
-            valBrandProduct.text = productDetail?.brand
-            vaModelPoduct.text   = productDetail?.model
-            valCostPrice.text    = productDetail?.costprice?.toInt().toString()
-            valSellingPrice.text = productDetail?.sellingprice?.toInt().toString()
+            valItemProduct.text  = productDetail.item
+            valBrandProduct.text = productDetail.brand
+            vaModelPoduct.text   = productDetail.model
+            valCostPrice.text    = productDetail.costprice.toString()
+            valSellingPrice.text = productDetail.sellingprice.toString()
 
             Glide.with(this)
-                .load(productDao?.getImageUrl())
+                .load(viewModel.getProductImageUri())
                 .into(imageDetail)
-        }
 
+            viewModel.clearProductDetail(productDetail.id)
+        }
         btnRemoveProduct.setOnClickListener{
-            productDao?.delete(productDetail)
+            viewModel.removeProduct(productDetail)
             Snackbar.make(v, "Producto eliminado...", Snackbar.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
 
     }
-
+//falta crear una vista que edite el producto
 
 }

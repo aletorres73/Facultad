@@ -7,15 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.SharedPreferencesCompat.EditorCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.database.AppDataBase
 import com.productosapp.database.UserDao
+import com.productosapp.fragments.login_register.LoginFragment
 
 class EditUserFragment : Fragment() {
-
-    private var db: AppDataBase? = null
-    private var userDao: UserDao? = null
 
     lateinit var v: View
 
@@ -24,6 +24,11 @@ class EditUserFragment : Fragment() {
     lateinit var editUserName    : TextView
     lateinit var editEmail       : TextView
     lateinit var btnUpdatetUser  : Button
+
+    companion object{
+        fun newInstance() = LoginFragment()
+    }
+    private lateinit var viewModel: EditUserViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,20 +45,23 @@ class EditUserFragment : Fragment() {
         return v
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity()).get(EditUserViewModel::class.java)
+
+        viewModel.instanceDataBase(requireContext())
+
+    }
     override fun onStart() {
         super.onStart()
 
-        db = AppDataBase.getInstance(requireContext())
-        userDao = db?.UserDao()
-        userDao?.loadAllUsers()
-
-        val userLogged = userDao?.findUserLogged()
+        val userLogged = viewModel.getUserLogged()
 
         if(userLogged !=null){
-            editName.text        = userLogged.name
-            editLastName.text    = userLogged.lastname
-            editUserName.text    = userLogged.username
-            editEmail.text       = userLogged.email
+            editName.text     = userLogged.name
+            editLastName.text = userLogged.lastname
+            editUserName.text = userLogged.username
+            editEmail.text    = userLogged.email
 
         }
 
@@ -62,9 +70,8 @@ class EditUserFragment : Fragment() {
             userLogged?.lastname = editLastName.text.toString()
             userLogged?.username = editUserName.text.toString()
             userLogged?.email    = editEmail.text.toString()
-
-            userDao?.update(userLogged!!)
-            userDao?.setLogged(userLogged!!.id)
+            
+            viewModel.updateAndSetUser(userLogged!!)
 
             findNavController().popBackStack()
         }
