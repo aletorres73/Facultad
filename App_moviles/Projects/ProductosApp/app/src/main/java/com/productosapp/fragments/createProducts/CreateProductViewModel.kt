@@ -67,6 +67,7 @@ class CreateProductViewModel : ViewModel() {
             sellingprice.value!!.toInt(),
             ""
         )
+        //generar un userId para la tabla de productos
         productDao?.insertProduct(newProduct)
     }
 }
