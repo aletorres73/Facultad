@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "products")
 class Products(
     id:          Int,
+    userid:      Int,
     item:        String,
     detail:      Int,
     brand:       String,
@@ -18,6 +19,9 @@ class Products(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo("id")
     var id: Int
+
+    @ColumnInfo("userid")
+    var userid: Int
 
     @ColumnInfo("item")
     var item: String
@@ -42,6 +46,7 @@ class Products(
 
     init{
         this.id           = id
+        this.userid       = userid
         this.item         = item
         this.detail       = detail
         this.brand        = brand

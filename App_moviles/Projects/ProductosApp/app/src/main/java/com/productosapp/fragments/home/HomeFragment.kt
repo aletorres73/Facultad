@@ -47,7 +47,7 @@ class HomeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        val user = viewModel.getuserProduct()
+        val user = viewModel.getUserProduct()
         val productList = viewModel.getListProduct(user!!)
 
         // Configurar el adaptador de la lista
@@ -56,12 +56,12 @@ class HomeFragment : Fragment() {
 
                 if (productList != null) {
                     viewModel.setDetailProduct(productList[position]!!)
+                    val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment()
+                    findNavController().navigate(action)
                 }
                 else{
                     Snackbar.make(v, "Lista de productos nula...", Snackbar.LENGTH_SHORT).show()
                 }
-                val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment()
-                findNavController().navigate(action)
             }
         }
 

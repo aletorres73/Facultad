@@ -83,14 +83,6 @@ class ProductAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-//        val view: View = when (viewType) {
-//            VIEW_TYPE_CREATE_PRODUCT -> {
-//                layoutInflater.inflate(R.layout.item_create_product, parent, false)
-//            }
-//            else -> {
-//                layoutInflater.inflate(R.layout.item_product, parent, false)
-//            }
-//        }
         val view = layoutInflater.inflate(R.layout.item_product, parent, false)
         return ProductHolder(view)
     }
@@ -109,11 +101,11 @@ class ProductAdapter(
                 onClick(position) // ejecuta la función onClick que se la pasa una position
             }
         } else {
-            //holder.getNewItem()
-            holder.getCard().setOnClickListener {
-                //lo que se quiera hacer cuando se hace click
-                onClick(position) // ejecuta la función onClick que se la pasa una posi
-            }
+//            //holder.getNewItem()
+//            holder.getCard().setOnClickListener {
+//                //lo que se quiera hacer cuando se hace click
+//                onClick(position) // ejecuta la función onClick que se la pasa una posi
+//            }
         }
     }
 }

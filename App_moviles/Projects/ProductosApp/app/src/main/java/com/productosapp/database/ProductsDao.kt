@@ -20,8 +20,8 @@ interface ProductsDao{
     @Delete
     fun delete(user: Products?)
 
-    @Query("SELECT * FROM products WHERE id = :id")
-    fun loadProductById(id: Int):MutableList<Products?>?
+    @Query("SELECT * FROM products WHERE userid = :userid")
+    fun loadProductById(userid: Int):MutableList<Products?>?
 
     @Query("SELECT * FROM products WHERE brand = :brand")
     fun loadProductByBrand(brand: String):Products?

@@ -22,12 +22,12 @@ class HomeViewModel : ViewModel() {
         userDao?.loadAllUsers()
     }
 
-    fun getuserProduct(): User?{
+    fun getUserProduct(): User?{
         return  userDao?.findUserLogged()
     }
 
     fun getListProduct(user: User): MutableList<Products?>? {
-        return productDao?.loadProductById(user!!.id)
+        return productDao?.loadProductById(user.id)
     }
 
     fun setDetailProduct(product: Products){
