@@ -2,8 +2,6 @@ package com.productosapp.fragments.home
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.ProductsDao
 import com.productosapp.entities.Products
 
 class DetailViewModel : ViewModel() {

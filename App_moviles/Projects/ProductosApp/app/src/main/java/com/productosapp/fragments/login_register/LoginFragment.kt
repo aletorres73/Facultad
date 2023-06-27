@@ -10,11 +10,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.activities.SplashActivity
 import com.productosapp.database.FirebaseDataUserSource
 import com.productosapp.database.UserSource
+import com.productosapp.fragments.home.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.dsl.module
@@ -28,7 +30,8 @@ class LoginFragment : Fragment() {
 
     private lateinit var v: View
 
-    private val viewModel: LoginViewModel by viewModel()
+    private lateinit var viewModel: LoginViewModel
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,8 +49,8 @@ class LoginFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        loadKoinModules(userSourceModule)
 
+        viewModel = ViewModelProvider(requireActivity()).get(LoginViewModel::class.java)
         viewModel.checkLoggedCondition()
         viewModel.checkView.observe(viewLifecycleOwner, Observer { result ->
             if (result) {
@@ -55,6 +58,7 @@ class LoginFragment : Fragment() {
             }
         })
     }
+
     override fun onStart() {
         super.onStart()
 
@@ -97,9 +101,5 @@ class LoginFragment : Fragment() {
         requireActivity().finish()
     }
 
-    companion object {
-        val userSourceModule = module {
-            single<UserSource> { FirebaseDataUserSource() }
-        }
-    }
+
 }

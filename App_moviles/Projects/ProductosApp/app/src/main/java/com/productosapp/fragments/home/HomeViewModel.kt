@@ -2,35 +2,39 @@ package com.productosapp.fragments.home
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.ProductsDao
-import com.productosapp.database.UserDao
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.productosapp.database.*
 import com.productosapp.entities.Products
 import com.productosapp.entities.User
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel (private val userSource: UserSource, private val productSource: ProductSource): ViewModel() {
 
-    private var db: AppDataBase? = null
-    private var productDao: ProductsDao? = null
-    private var userDao: UserDao? = null
-
-    fun instanceDataBase(context: Context){
-        db = AppDataBase.getInstance(context)
-        productDao = db?.ProductsDao()
-        productDao?.loadAllProducts()
-        userDao = db?.UserDao()
-        userDao?.loadAllUsers()
-    }
+    val db = Firebase.firestore
+    lateinit var userDb: User
+    private lateinit var productDb: MutableList<Products?>
 
     fun getUserProduct(): User?{
-        return  userDao?.findUserLogged()
+        viewModelScope.launch (Dispatchers.Main) {
+             userDb = productSource.getUserProduct()!!
+        }
+        return userDb
     }
 
     fun getListProduct(user: User): MutableList<Products?>? {
-        return productDao?.loadProductById(user.id)
+        viewModelScope.launch(Dispatchers.Main) {
+            productDb = productSource.loadProductById(user.id)!!
+        }
+        return productDb
     }
 
+
     fun setDetailProduct(product: Products){
-        productDao?.setDetail(product.id)
+        viewModelScope.launch(Dispatchers.Main) {
+            productSource.setDetail(product.id)
+        }
     }
 }

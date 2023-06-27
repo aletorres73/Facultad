@@ -1,6 +1,5 @@
 package com.productosapp.fragments.login_register
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
-import com.productosapp.activities.SplashActivity
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.UserDao
-import com.productosapp.entities.User
 
 class RegisterFragment : Fragment() {
 

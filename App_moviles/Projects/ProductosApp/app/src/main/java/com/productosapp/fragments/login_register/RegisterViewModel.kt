@@ -2,11 +2,8 @@ package com.productosapp.fragments.login_register
 
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.UserDao
 import com.productosapp.entities.User
 
 class RegisterViewModel : ViewModel() {

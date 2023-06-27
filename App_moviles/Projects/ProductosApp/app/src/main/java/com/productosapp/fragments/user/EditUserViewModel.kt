@@ -2,8 +2,6 @@ package com.productosapp.fragments.user
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.UserDao
 import com.productosapp.entities.User
 
 class EditUserViewModel : ViewModel() {

@@ -12,11 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.activities.LoginActivity
-import com.productosapp.activities.SplashActivity
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.UserDao
 import com.productosapp.fragments.login_register.LoginFragment
-import com.productosapp.fragments.login_register.LoginViewModel
 
 class UserFragment : Fragment() {
 

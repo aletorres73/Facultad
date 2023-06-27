@@ -1,12 +1,7 @@
 package com.productosapp.entities
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "products")
 class Products(
-    id:          Int,
+    id    :      Int,
     userid:      Int,
     item:        String,
     detail:      Int,
@@ -16,32 +11,14 @@ class Products(
     sellingprice:Int,
     imageuri:    String){
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo("id")
-    var id: Int
-
-    @ColumnInfo("userid")
+    var id    : Int
     var userid: Int
-
-    @ColumnInfo("item")
     var item: String
-
-    @ColumnInfo("brand")
     var brand: String
-
-    @ColumnInfo("model")
     var model: String
-
-    @ColumnInfo("costprice")
     var costprice: Int
-
-    @ColumnInfo("sellingprice")
     var sellingprice: Int
-
-    @ColumnInfo("imageuri")
     var imageuri: String
-
-    @ColumnInfo("detail")
     var detail: Int
 
     init{

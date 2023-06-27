@@ -7,12 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.SharedPreferencesCompat.EditorCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.UserDao
 import com.productosapp.fragments.login_register.LoginFragment
 
 class EditUserFragment : Fragment() {

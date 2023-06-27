@@ -6,6 +6,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.productosapp.R
+import com.productosapp.entities.AppModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +19,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
+
+        GlobalContext.startKoin {
+            androidContext(this@MainActivity)
+            modules(AppModule)
+        }
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         bottomBar       = findViewById(R.id.bottom_bar)

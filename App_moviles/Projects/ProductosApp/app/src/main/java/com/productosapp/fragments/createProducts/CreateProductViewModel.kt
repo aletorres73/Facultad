@@ -4,10 +4,6 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 
 import androidx.lifecycle.ViewModel
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.ImageDao
-import com.productosapp.database.ProductsDao
-import com.productosapp.database.UserDao
 import com.productosapp.entities.Products
 
 class CreateProductViewModel : ViewModel() {

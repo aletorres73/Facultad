@@ -13,12 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.ImageDao
-import com.productosapp.database.ProductsDao
-import com.productosapp.database.UserDao
-import com.productosapp.entities.Products
-import com.productosapp.fragments.home.HomeViewModel
 import com.productosapp.fragments.login_register.LoginFragment
 
 class CreateProductFragment : Fragment() {

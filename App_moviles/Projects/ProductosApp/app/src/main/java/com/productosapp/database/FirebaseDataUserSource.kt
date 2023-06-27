@@ -21,8 +21,15 @@ class FirebaseDataUserSource (): UserSource{
             throw IllegalStateException("No logged user found")
         }
     }
-    override suspend fun getRegisteredUser(): User {
-        TODO("Not yet implemented")
+
+    override suspend fun getRegisteredUser(username: String, password: String): Boolean {
+        val querySnapshot = collection
+            .whereEqualTo("username", username)
+            .whereEqualTo("password", password)
+            .get()
+            .await()
+
+        return !querySnapshot.isEmpty
     }
 
 }

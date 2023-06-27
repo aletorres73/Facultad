@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "375083713677",
+    "project_id": "productapp-f525b",
+    "storage_bucket": "productapp-f525b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375083713677:android:75a05b142e126511478ec4",
+        "android_client_info": {
+          "package_name": "com.productosapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "375083713677-u2na179j3ud91f1l45h0l1ohr2fbj4so.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsztC_xkWTgqgDpXl7MpIGuzZZ4UWnMfw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "375083713677-u2na179j3ud91f1l45h0l1ohr2fbj4so.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

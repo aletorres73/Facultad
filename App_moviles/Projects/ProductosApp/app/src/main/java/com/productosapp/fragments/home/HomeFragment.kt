@@ -12,10 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.adapters.ProductAdapter
-import com.productosapp.database.AppDataBase
-import com.productosapp.database.ProductsDao
-import com.productosapp.database.UserDao
-import com.productosapp.fragments.login_register.LoginFragment
 
 class HomeFragment : Fragment() {
 
@@ -23,9 +19,6 @@ class HomeFragment : Fragment() {
     lateinit var recProduct : RecyclerView
     lateinit var adapter    : ProductAdapter
 
-    companion object{
-        fun newInstance() = LoginFragment()
-    }
     private lateinit var viewModel : HomeViewModel
 
     override fun onCreateView(
@@ -41,7 +34,7 @@ class HomeFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(HomeViewModel::class.java)
-        viewModel.instanceDataBase(requireContext())
+
     }
 
     override fun onStart() {
@@ -72,3 +65,5 @@ class HomeFragment : Fragment() {
 
 
 }
+
+
