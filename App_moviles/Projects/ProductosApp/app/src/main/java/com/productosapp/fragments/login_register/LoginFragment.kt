@@ -48,9 +48,9 @@ class LoginFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(LoginViewModel::class.java)
 
-        viewModel.instanceDataBase(requireContext())
+//        viewModel.instanceDataBase(requireContext())
 
-        if (viewModel.findUserLogged()) {
+        if (viewModel.checkLoggedCondition()) {
             val intent = Intent(requireContext(), SplashActivity::class.java)
             startActivity(intent)
             requireActivity().finish()
@@ -64,7 +64,6 @@ class LoginFragment : Fragment() {
         btnLogin.setOnClickListener {
             viewModel.username.value = inputUserName.text.toString()
             viewModel.password.value = inputPass.text.toString()
-            viewModel.loadUser()
 
             if (viewModel.isLoginEmpty()) {
                 Toast.makeText(requireContext(),"Ingrese un usuario y password",
