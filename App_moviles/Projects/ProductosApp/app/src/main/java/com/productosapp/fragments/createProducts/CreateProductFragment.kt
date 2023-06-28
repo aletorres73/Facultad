@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.ImageView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -30,10 +31,6 @@ class CreateProductFragment : Fragment() {
 
     lateinit var productImage           : ImageView
     lateinit var url                    : String
-
-    companion object {
-        fun newInstance() = LoginFragment()
-    }
 
     private lateinit var viewModel: CreateProductViewModel
 
@@ -59,7 +56,6 @@ class CreateProductFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(CreateProductViewModel::class.java)
-        viewModel.instanceDataBase(requireContext())
     }
 
     override fun onStart() {
@@ -68,15 +64,14 @@ class CreateProductFragment : Fragment() {
         btnLoadImage.setOnClickListener {
             getInput()
 
-            //revisar la base de datos
             if (inputItemproduct.text.isEmpty()) {
                 Snackbar.make(v, "Ingrese un item válido...", Snackbar.LENGTH_SHORT).show()
             } else {
-                    url = viewModel.getUriImageProduct()
-
-                Glide.with(this)
-                    .load(url)
-                    .into(productImage)
+                viewModel.getUriImageProduct()
+                viewModel.uri.observe(viewLifecycleOwner, Observer{result ->
+                    Glide.with(this)
+                        .load(result)
+                        .into(productImage) })
             }
         }
 
@@ -106,7 +101,7 @@ class CreateProductFragment : Fragment() {
 
         }
     }
-    fun getInput()
+    private fun getInput()
     {
         viewModel.item.value          = inputItemproduct.text.toString()
         viewModel.brand.value         = inputBrandproduct.text.toString()

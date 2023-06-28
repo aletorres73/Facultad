@@ -10,28 +10,28 @@ import com.productosapp.entities.Products
 import com.productosapp.entities.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 
-class HomeViewModel (private val userSource: UserSource, private val productSource: ProductSource): ViewModel() {
+class HomeViewModel : ViewModel() {
 
-    val db = Firebase.firestore
     lateinit var userDb: User
     private lateinit var productDb: MutableList<Products?>
 
-    fun getUserProduct(): User?{
+    private val userSource: FirebaseDataUserSource by inject(FirebaseDataUserSource::class.java)
+    private val productSource: FirebaseDataProductSource by inject(FirebaseDataProductSource::class.java)
+
+    fun getUserProduct(): User {
         viewModelScope.launch (Dispatchers.Main) {
-             userDb = productSource.getUserProduct()!!
+             userDb = userSource.getLoggedUser()
         }
         return userDb
     }
-
-    fun getListProduct(user: User): MutableList<Products?>? {
+    fun getListProduct(user: User): MutableList<Products?> {
         viewModelScope.launch(Dispatchers.Main) {
             productDb = productSource.loadProductById(user.id)!!
         }
         return productDb
     }
-
-
     fun setDetailProduct(product: Products){
         viewModelScope.launch(Dispatchers.Main) {
             productSource.setDetail(product.id)

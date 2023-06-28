@@ -15,18 +15,15 @@ import com.productosapp.R
 class RegisterFragment : Fragment() {
 
 
-    private lateinit var inputName: EditText
-    private lateinit var inputLastName: EditText
-    private lateinit var inputUser: EditText
-    private lateinit var inputEmail: EditText
-    private lateinit var inputPass: EditText
-    private lateinit var btnMakeUser: Button
+    private lateinit var inputName      : EditText
+    private lateinit var inputLastName  : EditText
+    private lateinit var inputUser      : EditText
+    private lateinit var inputEmail     : EditText
+    private lateinit var inputPass      : EditText
+    private lateinit var btnMakeUser    : Button
 
-    private lateinit var v: View
+    private lateinit var v              : View
 
-    companion object{
-        fun newInstance() = LoginFragment()
-    }
     private lateinit var viewModel      : RegisterViewModel
 
     override fun onCreateView(
@@ -49,7 +46,6 @@ class RegisterFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(RegisterViewModel::class.java)
 
-        viewModel.instanceDataBase(requireContext())
 
     }
 

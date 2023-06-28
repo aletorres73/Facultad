@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.productosapp.database.UserSource
+import com.productosapp.database.FirebaseDataUserSource
 import kotlinx.coroutines.*
-
-
-class LoginViewModel (private val userSource: UserSource) : ViewModel() {
+import org.koin.java.KoinJavaComponent.inject
+class LoginViewModel : ViewModel() {
 
     val username: MutableLiveData<String> = MutableLiveData()
     val password: MutableLiveData<String> = MutableLiveData()
@@ -17,7 +16,7 @@ class LoginViewModel (private val userSource: UserSource) : ViewModel() {
     private var _checkView: MutableLiveData<Boolean> = MutableLiveData()
     val checkView : LiveData<Boolean> get()= _checkView
 
-
+    private val userSource : FirebaseDataUserSource by inject(FirebaseDataUserSource::class.java)
 
     fun checkLoggedCondition() {
         viewModelScope.launch (Dispatchers.Main){

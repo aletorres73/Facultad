@@ -1,34 +1,41 @@
-package com.productosapp.fragments.home
+package com.productosapp.fra
 
-import android.content.Context
+
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.productosapp.database.FirebaseDataProductSource
 import com.productosapp.entities.Products
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 
 class DetailViewModel : ViewModel() {
 
-    private var db: AppDataBase? = null
-    private var productDao: ProductsDao? = null
+    private val productSource : FirebaseDataProductSource by inject(FirebaseDataProductSource::class.java)
 
-    fun instanceDataBase(context : Context){
-        db = AppDataBase.getInstance(context)
-        productDao = db?.ProductsDao()
-        productDao?.loadAllProducts()
-    }
+    val productDb : MutableLiveData<Products> = MutableLiveData()
+    val image     :MutableLiveData<String>    = MutableLiveData()
 
     fun getProductDetail(): Products? {
-        return productDao?.findProductDetail()
+        viewModelScope.launch(Dispatchers.Main) {
+            productDb.value= productSource.findProductDetail()!!
+        }
+        return productDb.value
     }
-
-    fun getProductImageUri(): String? {
-        return productDao?.getImageUrl()
+    fun getProductImageUri() {
+        image.value = productDb.value?.imageuri
     }
 
     fun removeProduct(product: Products?){
-        productDao?.delete(product)
+        viewModelScope.launch(Dispatchers.Main){
+            productSource.delete(product)
+        }
     }
-
     fun clearProductDetail(id : Int){
-        productDao?.clearDetail(id)
+        viewModelScope.launch(Dispatchers.Main){
+            productSource.clearDetail(id)
+        }
     }
 
 }

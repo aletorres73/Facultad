@@ -41,7 +41,7 @@ class HomeFragment : Fragment() {
         super.onStart()
 
         val user = viewModel.getUserProduct()
-        val productList = viewModel.getListProduct(user!!)
+        val productList = viewModel.getListProduct(user)
 
         // Configurar el adaptador de la lista
         adapter = ProductAdapter(productList) { position ->

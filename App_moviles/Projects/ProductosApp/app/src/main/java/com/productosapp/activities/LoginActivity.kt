@@ -3,8 +3,7 @@ package com.productosapp.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.productosapp.R
-import com.productosapp.entities.AppModule
-import com.productosapp.fragments.login_register.LoginFragment.Companion.appModule
+import com.productosapp.entities.userModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
@@ -17,7 +16,7 @@ class LoginActivity : AppCompatActivity() {
 
         startKoin {
             androidContext(this@LoginActivity)
-            modules(AppModule)
+            modules(userModule)
         }
     }
 }
