@@ -1,23 +1,24 @@
 package com.productosapp.entities
 
-class User(
-    id: Int,
-    logged: Boolean,
-    name: String,
-    lastname: String,
-    username: String,
-    email: String,
-    password: String
-) {
-    var password: String
-    var email: String
-    var username: String
-    var lastname: String
-    var name: String
-    var logged: Boolean
-    var id: Int
+class User() {
 
-    init {
+    var password: String = ""
+    var email: String = ""
+    var username: String = ""
+    var lastname: String = ""
+    var name: String = ""
+    var logged: Boolean = false
+    var id: Int = 0
+
+    constructor(
+        id: Int,
+        logged: Boolean,
+        name: String,
+        lastname: String,
+        username: String,
+        email: String,
+        password: String
+    ) : this() {
         this.id = id
         this.logged = logged
         this.name = name
@@ -27,5 +28,3 @@ class User(
         this.password = password
     }
 }
-
-

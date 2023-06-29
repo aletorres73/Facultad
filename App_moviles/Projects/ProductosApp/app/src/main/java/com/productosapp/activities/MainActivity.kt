@@ -9,7 +9,7 @@ import com.productosapp.R
 import com.productosapp.entities.productModule
 import com.productosapp.entities.userModule
 import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.GlobalContext
+import org.koin.core.context.GlobalContext.startKoin
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,11 +19,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         supportActionBar?.hide()
-
-        GlobalContext.startKoin {
-            androidContext(this@MainActivity)
-            modules(userModule, productModule)
-        }
+//
+//        startKoin {
+//            androidContext(this@MainActivity)
+//            modules(userModule, productModule)
+//        }
 
         navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         bottomBar       = findViewById(R.id.bottom_bar)

@@ -1,5 +1,4 @@
-package com.productosapp.fra
-
+package com.productosapp.fragments.home
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,8 +13,8 @@ class DetailViewModel : ViewModel() {
 
     private val productSource : FirebaseDataProductSource by inject(FirebaseDataProductSource::class.java)
 
-    val productDb : MutableLiveData<Products> = MutableLiveData()
-    val image     :MutableLiveData<String>    = MutableLiveData()
+    private val productDb : MutableLiveData<Products> = MutableLiveData()
+    val image :MutableLiveData<String>    = MutableLiveData()
 
     fun getProductDetail(): Products? {
         viewModelScope.launch(Dispatchers.Main) {
@@ -26,7 +25,6 @@ class DetailViewModel : ViewModel() {
     fun getProductImageUri() {
         image.value = productDb.value?.imageuri
     }
-
     fun removeProduct(product: Products?){
         viewModelScope.launch(Dispatchers.Main){
             productSource.delete(product)
@@ -37,5 +35,4 @@ class DetailViewModel : ViewModel() {
             productSource.clearDetail(id)
         }
     }
-
 }

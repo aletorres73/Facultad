@@ -8,15 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.entities.Products
-import com.productosapp.fra.DetailViewModel
 
 class DetailFragment : Fragment() {
 

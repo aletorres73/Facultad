@@ -1,8 +1,6 @@
 package com.productosapp.fragments.createProducts
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.productosapp.database.FirebaseDataProductSource
@@ -51,7 +49,7 @@ class CreateProductViewModel(private val userSource: FirebaseDataUserSource, pri
             val id   =productSource.getProductId()
 
             val newProduct = Products(
-                0,
+                id,
                 user!!.id,
                 item.value.toString(),
                 0,

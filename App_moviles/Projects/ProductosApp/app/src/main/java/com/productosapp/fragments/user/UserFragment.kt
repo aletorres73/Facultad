@@ -8,11 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.activities.LoginActivity
-import com.productosapp.fragments.login_register.LoginFragment
+import com.productosapp.entities.User
 
 class UserFragment : Fragment() {
 
@@ -26,9 +28,6 @@ class UserFragment : Fragment() {
     lateinit var btnEditUser    : Button
     lateinit var btnCloseSesion : Button
 
-    companion object{
-        fun newInstance() = LoginFragment()
-    }
     private lateinit var viewModel: UserViewModel
 
     override fun onCreateView(
@@ -51,37 +50,33 @@ class UserFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
-
-        viewModel.instanceDataBase(requireContext())
-
     }
 
     override fun onStart() {
         super.onStart()
 
-        val userLogged = viewModel.getUserLogged()
-
-        if(userLogged !=null){
-            txtName.text        = userLogged.name
-            txtLastName.text    = userLogged.lastname
-            txtUserName.text    = userLogged.username
-            txtEmail.text       = userLogged.email
-
+        if(viewModel.getUserLogged()) {
+            viewModel.user.value?.let { loadUser(it) }
         }
-
         btnCloseSesion.setOnClickListener {
-
-            viewModel.clearUserLogged(userLogged!!.id)
-
-            val contextActivity = requireContext()
-            val intent = Intent(contextActivity, LoginActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
+            viewModel.user.value?.let { it1 -> viewModel.clearUserLogged(it1.id) }
+            goToSplash()
         }
-
         btnEditUser.setOnClickListener {
             val action = UserFragmentDirections.actionUserFragmentToEditUserFragment()
             findNavController().navigate(action)
         }
+    }
+    private fun loadUser(userLogged: User){
+        txtName.text     = userLogged.name
+        txtLastName.text = userLogged.lastname
+        txtUserName.text = userLogged.username
+        txtEmail.text    = userLogged.email
+    }
+    private fun goToSplash(){
+        val contextActivity = requireContext()
+        val intent = Intent(contextActivity, LoginActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
     }
 }

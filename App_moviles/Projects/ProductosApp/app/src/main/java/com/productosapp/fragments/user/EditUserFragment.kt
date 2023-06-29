@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
+import com.productosapp.entities.User
 import com.productosapp.fragments.login_register.LoginFragment
 
 class EditUserFragment : Fragment() {
@@ -22,9 +23,6 @@ class EditUserFragment : Fragment() {
     lateinit var editEmail       : TextView
     lateinit var btnUpdatetUser  : Button
 
-    companion object{
-        fun newInstance() = LoginFragment()
-    }
     private lateinit var viewModel: EditUserViewModel
 
     override fun onCreateView(
@@ -41,36 +39,24 @@ class EditUserFragment : Fragment() {
 
         return v
     }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(EditUserViewModel::class.java)
-
-        viewModel.instanceDataBase(requireContext())
-
     }
     override fun onStart() {
         super.onStart()
-
-        val userLogged = viewModel.getUserLogged()
-
-        if(userLogged !=null){
-            editName.text     = userLogged.name
-            editLastName.text = userLogged.lastname
-            editUserName.text = userLogged.username
-            editEmail.text    = userLogged.email
-
-        }
+        viewModel.getUserLogged()
 
         btnUpdatetUser.setOnClickListener {
-            userLogged?.name     = editName.text.toString()
-            userLogged?.lastname = editLastName.text.toString()
-            userLogged?.username = editUserName.text.toString()
-            userLogged?.email    = editEmail.text.toString()
-            
-            viewModel.updateAndSetUser(userLogged!!)
-
+            viewModel.user.value?.let { it->loadUser(it)}
+            viewModel.updateAndSetUser()
             findNavController().popBackStack()
         }
+    }
+    private fun loadUser(userLogged: User){
+        editName.text     = userLogged.name
+        editLastName.text = userLogged.lastname
+        editUserName.text = userLogged.username
+        editEmail.text    = userLogged.email
     }
 }

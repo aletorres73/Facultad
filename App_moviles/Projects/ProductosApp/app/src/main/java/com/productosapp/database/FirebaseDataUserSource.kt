@@ -8,27 +8,32 @@ import kotlinx.coroutines.tasks.await
 
 class FirebaseDataUserSource (): UserSource{
 
-    val db = Firebase.firestore
 
-    private val collection = db.collection("users")
-    override suspend fun getLoggedUser(): User {
-        val querySnapshot = collection.whereEqualTo("logged", true).get().await()
-        if (!querySnapshot.isEmpty) {
-            val userDocument = querySnapshot.documents.first()
-            val user = userDocument.toObject<User>()
-            return user ?: throw IllegalStateException("User is null")
-        } else {
-            throw IllegalStateException("No logged user found")
-        }
+    val db = Firebase.firestore
+    private val collectionName : String = "users"
+    private val collection = db.collection(collectionName)
+
+    override suspend fun getLoggedUser(): User? {
+        val querySnapshot = collection
+            .whereEqualTo("logged", true)
+            .get()
+            .await()
+
+        val userDocument = querySnapshot.documents.firstOrNull()
+        val user = userDocument?.toObject<User>()
+//        return user ?: throw IllegalStateException("User is null")
+        return user
     }
-    override suspend fun getRegisteredUser(username: String, password: String): Boolean {
+    override suspend fun getRegisteredUser(username: String, password: String): User? {
         val querySnapshot = collection
             .whereEqualTo("username", username)
             .whereEqualTo("password", password)
             .get()
             .await()
 
-        return !querySnapshot.isEmpty
+        val userDocument = querySnapshot.documents.firstOrNull()
+        val user = userDocument?.toObject<User>()
+        return user
     }
     override suspend fun loadUserByUsername(username: String): User {
         val querySnapshot = collection.whereEqualTo("username", username).get().await()
@@ -58,5 +63,55 @@ class FirebaseDataUserSource (): UserSource{
             throw IllegalStateException("Failed to insert user into Firestore: ${e.message}")
         }
     }
+    override suspend fun clearLoggedUser(id: Int) {
+        val querySnapshot = collection
+            .whereEqualTo("id",id)
+            .get()
+            .await()
 
+        if(!querySnapshot.isEmpty) {
+            val userDocument = querySnapshot.documents.first()
+            userDocument
+                .reference
+                .update("logged", false)
+                .await()
+        }
+        else{
+            throw IllegalStateException("Error in clear logged user")
+        }
+    }
+    override suspend fun setLogged(id: Int) {
+        val querySnapshot = collection
+            .whereEqualTo("id",id)
+            .get()
+            .await()
+
+        if(!querySnapshot.isEmpty) {
+            val userDocument = querySnapshot.documents.first()
+            userDocument
+                .reference
+                .update("logged", true)
+                .await()
+        }
+        else{
+            throw IllegalStateException("Error in clear logged user")
+        }    }
+    override suspend fun update(user: User) {
+        val querySnapshot = collection
+            .whereEqualTo("id", user.id)
+            .get()
+            .await()
+        if(!querySnapshot.isEmpty){
+            try {
+                querySnapshot
+                    .documents.first()
+                    .reference
+                    .set(user)
+                    .await()
+                println("User updated successfully")
+            } catch (e: Exception) {
+                throw IllegalStateException("Error updating user: ${e.message}")
+            }
+        }
+    }
 }

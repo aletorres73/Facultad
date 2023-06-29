@@ -52,42 +52,38 @@ class LoginFragment : Fragment() {
 
         viewModel = ViewModelProvider(requireActivity()).get(LoginViewModel::class.java)
         viewModel.checkLoggedCondition()
-        viewModel.checkView.observe(viewLifecycleOwner, Observer { result ->
-            if (result) {
+        viewModel.checkLogged.observe(viewLifecycleOwner) { logged ->
+            if (logged) {
                 goToSplash()
             }
-        })
+        }
     }
 
     override fun onStart() {
         super.onStart()
 
         btnLogin.setOnClickListener {
-            viewModel.username.value = inputUserName.text.toString()
-            viewModel.password.value = inputPass.text.toString()
-
+            loadInput()
             viewModel.isLoginEmpty()
-            viewModel.checkView.observe(viewLifecycleOwner, Observer { result ->
-                if (result) {
+            viewModel.checkEmpty.observe(viewLifecycleOwner) { empty ->
+                if (!empty) {
+                    viewModel.isLoginOk()
+                    viewModel.checkLogin.observe(viewLifecycleOwner) { login ->
+                        if (login) {
+                            viewModel.setLogged()
+                            goToSplash()
+                        } else {
+                            Toast.makeText(
+                                requireContext(), "Usuario o password incorrecto",
+                                Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
                     Toast.makeText(
                         requireContext(), "Ingrese un usuario y password",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-
+                        Toast.LENGTH_SHORT).show()
                 }
-            })
-            viewModel.isLoginOk()
-            viewModel.checkView.observe(viewLifecycleOwner, Observer { result ->
-                if (result) {
-                    goToSplash()
-                } else {
-                    Toast.makeText(
-                        requireContext(), "Usuario o password incorrecto",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
+            }
         }
         btnRegister.setOnClickListener {
             val action = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
@@ -100,6 +96,8 @@ class LoginFragment : Fragment() {
         startActivity(intent)
         requireActivity().finish()
     }
-
-
+    private fun loadInput(){
+        viewModel.username.value = inputUserName.text.toString()
+        viewModel.password.value = inputPass.text.toString()
+    }
 }
