@@ -1,14 +1,11 @@
 package com.productosapp.database
 
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.dataObjects
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.productosapp.entities.Products
-import com.productosapp.entities.User
 import kotlinx.coroutines.tasks.await
-import kotlin.system.measureTimeMillis
 
 class FirebaseDataProductSource (): ProductSource {
 
@@ -38,7 +35,7 @@ class FirebaseDataProductSource (): ProductSource {
             }
         }
         else{
-            productListFb = productList
+        productListFb = productList
         }
     }
     override suspend fun findProductDetail(): Products {
@@ -117,6 +114,8 @@ class FirebaseDataProductSource (): ProductSource {
             throw IllegalStateException("No document found with the specified ID")
         }
     }
+
+
 }
 
 

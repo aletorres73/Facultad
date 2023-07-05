@@ -13,8 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.activities.LoginActivity
 import com.productosapp.entities.User
-import com.productosapp.fragments.login_register.LoginViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+
 
 
 class UserFragment : Fragment() {

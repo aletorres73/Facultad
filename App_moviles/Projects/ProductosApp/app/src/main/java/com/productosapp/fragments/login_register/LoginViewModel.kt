@@ -1,7 +1,8 @@
 package com.productosapp.fragments.login_register
 
 
-import androidx.lifecycle.LiveData
+import android.annotation.SuppressLint
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,28 +21,29 @@ class LoginViewModel : ViewModel() {
     var userDb : MutableLiveData<User> = MutableLiveData()
 
     private val userSource : FirebaseDataUserSource by inject(FirebaseDataUserSource::class.java)
+    @SuppressLint("StaticFieldLeak")
+    lateinit var requireActivity : FragmentActivity
 
-    fun checkLoggedCondition() {
-        viewModelScope.launch (Dispatchers.Main){
-            userSource.getLoggedUser()
-            userDb.value = userSource.userFb
-            checkLogged.value = userDb.value != null
-        }
-    }
     fun isLoginEmpty() {
         checkEmpty.value = username.value!!.isEmpty() || password.value!!.isEmpty()
     }
     fun isLoginOk() {
-        viewModelScope.launch (Dispatchers.Main) {
-            userSource.getRegisteredUser(username.value!! , password.value!!)
-            userDb.value = userSource.userFb
-            checkLogin.value = true
-
+        viewModelScope.launch () {
+            userSource.sigIn(username.value!!, password.value!!, requireActivity)
+            if(userSource.currentUser){
+                userSource.getRegisteredUser(username.value!!)
+                userDb.value = userSource.userFb
+                checkLogin.value = true
+            }else{
+                checkLogged.value = false
+            }
         }
    }
-    fun setLogged(){
-        viewModelScope.launch(Dispatchers.Main ){
-            userSource.setLogged(userDb.value!!.id)
+
+    fun init(activity: FragmentActivity){
+        requireActivity = activity
+        viewModelScope.launch (){
+            userSource.init()
         }
     }
 }

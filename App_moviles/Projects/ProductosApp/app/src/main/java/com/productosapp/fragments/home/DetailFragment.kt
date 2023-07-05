@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.entities.Products
 
@@ -56,20 +55,27 @@ class DetailFragment : Fragment() {
         super.onStart()
 
         btnRemoveProduct.setOnClickListener {
-            val productId = viewModel.productDb.value?.id
-            if (productId != null) {
-                viewModel.removeProduct(productId)
-                viewModel.viewState.observe(viewLifecycleOwner){
-                    when(it){
-                        DetailViewModel.STATE_DONE->{
+            viewModel.emptyList()
+            viewModel.viewState.observe(viewLifecycleOwner){
+                when (it){
+                    DetailViewModel.STATE_LAST->{
+                        findNavController().popBackStack()
+                    }
+                    DetailViewModel.STATE_REMOVING-> {
+                        val productId = viewModel.productDb.value?.id
+                        if (productId != null) {
+                            viewModel.removeProduct(productId)
+                        }
+                    }
+                    DetailViewModel.STATE_DONE->{
                             Toast.makeText(requireContext(), "Producto eliminado.", Toast.LENGTH_SHORT).show()
                             findNavController().popBackStack()
-                        }
                     }
                 }
             }
         }
     }
+
 
     private fun loadProductView(productDetail: Products){
         valItemProduct.text  = productDetail.item

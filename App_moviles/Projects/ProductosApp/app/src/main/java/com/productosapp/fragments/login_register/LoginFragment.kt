@@ -44,12 +44,13 @@ class LoginFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(requireActivity()).get(LoginViewModel::class.java)
-        viewModel.checkLoggedCondition()
-        viewModel.checkLogged.observe(viewLifecycleOwner) { logged ->
-            if (logged) {
-                goToSplash()
-            }
-        }
+//        viewModel.checkLoggedCondition()
+//        viewModel.checkLogged.observe(viewLifecycleOwner) { logged ->
+//            if (logged) {
+//                goToSplash()
+//            }
+//        }
+        viewModel.init(requireActivity())
     }
 
     override fun onStart() {
@@ -63,7 +64,6 @@ class LoginFragment : Fragment() {
                     viewModel.isLoginOk()
                     viewModel.checkLogin.observe(viewLifecycleOwner) { login ->
                         if (login) {
-                            viewModel.setLogged()
                             goToSplash()
                         } else {
                             Toast.makeText(

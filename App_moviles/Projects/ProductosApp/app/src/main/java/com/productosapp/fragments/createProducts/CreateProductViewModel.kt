@@ -6,10 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.productosapp.database.FirebaseDataProductSource
 import com.productosapp.database.FirebaseDataUserSource
 import com.productosapp.entities.Products
-import com.productosapp.entities.User
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent
 import org.koin.java.KoinJavaComponent.inject
 
 class CreateProductViewModel : ViewModel() {
@@ -57,9 +54,12 @@ class CreateProductViewModel : ViewModel() {
     fun createNewProduct() {
         viewModelScope.launch() {
             val userid = userSource.userFb!!.id
-//            val id = productSource.getProductId()
-            val id = productSource.productListFb.last().id +1
-
+            val id = productSource.getProductId()
+//            val id = if(productSource.productListFb.size == 0){
+//                    0
+//                } else{
+//                    productSource.productListFb.last().id +1
+//                }
             productDb.value?.let {
                 val newProduct = Products(
                     id,

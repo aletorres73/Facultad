@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.productosapp.database.FirebaseDataProductSource
 import com.productosapp.entities.Products
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -20,6 +19,7 @@ class DetailViewModel : ViewModel() {
     companion object{
         const val STATE_DONE    = "done"
         const val STATE_REMOVING= "removing"
+        const val STATE_LAST = "last"
     }
 
     fun getProductDetail() {
@@ -33,5 +33,14 @@ class DetailViewModel : ViewModel() {
             productSource.delete(id)
             viewState.value = STATE_DONE
         }
+    }
+    fun emptyList(){
+        if(productSource.productListFb.size == 0){
+            viewState.value = STATE_LAST
+        }
+        else{
+            viewState.value = STATE_REMOVING
+        }
+
     }
 }
