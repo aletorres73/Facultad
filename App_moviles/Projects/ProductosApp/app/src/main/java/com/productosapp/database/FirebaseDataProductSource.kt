@@ -1,5 +1,6 @@
 package com.productosapp.database
 
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.dataObjects
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -15,21 +16,32 @@ class FirebaseDataProductSource (): ProductSource {
     private val colecctionName : String = "products"
     private val collection = db.collection(colecctionName)
 
-    override suspend fun loadProductById(userid: Int): MutableList<Products?> {
-        val querySnapshot = collection.whereEqualTo("id", userid).get().await()
-        val productList = mutableListOf<Products?>()
+    var productListFb = mutableListOf<Products>()
+    var productFb : Products = Products()
 
-        for (document in querySnapshot.documents) {
-            val product = document.toObject<Products>()
-            if (product != null) {
-                productList.add(product)
-            } else {
-                throw IllegalStateException("No document found with the specified ID")
+    override suspend fun loadProductByUserId(userid: Int){
+        val productList = mutableListOf<Products>()
+        val querySnapshot = collection
+            .whereEqualTo("userid", userid)
+            .get()
+            .await()
+
+        if(!querySnapshot.isEmpty){
+            for (document in querySnapshot.documents) {
+                val product = document.toObject<Products>()
+                if (product != null) {
+                    productList.add(product)
+                } else {
+                    throw IllegalStateException("No document found with the specified ID")
+                }
+                productListFb =productList
             }
         }
-        return productList
+        else{
+            productListFb = productList
+        }
     }
-    override suspend fun findProductDetail(): Products? {
+    override suspend fun findProductDetail(): Products {
         val querySnapshot = collection
             .whereEqualTo("detail", true)
             .get()
@@ -43,39 +55,42 @@ class FirebaseDataProductSource (): ProductSource {
         }
     }
     override suspend fun getProductId(): Int {
-        val querySnapshot = collection.get().await()
+        val querySnapshot = collection
+            .orderBy("id", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .await()
 
         return if (querySnapshot.isEmpty) {0}
         else {
-            val documents = querySnapshot.documents
-            val lastDocument = documents[documents.size - 1]
-            val product = lastDocument.toObject<Products>()
-            product?.id ?: throw IllegalStateException("User ID is null")
+            val lastDocument = querySnapshot.documents.lastOrNull()
+            val product = lastDocument?.toObject<Products>()
+            (product?.id?.plus(1)) ?: 0
+
         }
     }
     override suspend fun insertProduct(product: Products) {
         try {
+            productListFb.add(product)
             collection.add(product).await()
         } catch (e: Exception) {
             throw IllegalStateException("Failed to insert product into Firestore: ${e.message}")
-        }    }
-    override suspend fun delete(product: Products?) {
-        if (product != null) {
-            try{
-                val querySnapshot = collection
-                    .whereEqualTo("id",product.id)
-                    .get()
-                    .await()
-                val documentRef = querySnapshot.documents.first()
-                documentRef
-                    .reference
-                    .delete()
-                    .await()
-            }catch (e: Exception){
-                throw IllegalStateException("Failed to remove user into Firestore: ${e.message}")
-            }
-        }else{
-            throw IllegalArgumentException("Product cannot be null")
+        }
+    }
+    override suspend fun delete(id : Int) {
+        try{
+            val querySnapshot = collection
+                .whereEqualTo("id",id)
+                .get()
+                .await()
+            val documentRef = querySnapshot
+                .first()
+                .reference
+                .delete()
+                .await()
+
+        }catch (e: Exception){
+            throw IllegalStateException("Failed to remove product into Firestore: ${e.message}")
         }
     }
     override suspend fun setDetail(id: Int) {

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -32,7 +33,6 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         v= inflater.inflate(R.layout.fragment_detail, container, false)
 
         valItemProduct  = v.findViewById(R.id.valItemProduct)
@@ -48,30 +48,29 @@ class DetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(DetailViewModel::class.java)
+        viewModel.getProductDetail()
+
+        getDetailProduct()
     }
     override fun onStart() {
         super.onStart()
-        val productDetail = viewModel.getProductDetail()
 
-        if(productDetail != null){
-            loadProductView(productDetail)
-            viewModel.getProductImageUri()
-
-            viewModel.image.observe(viewLifecycleOwner, Observer {result ->
-                Glide.with(this)
-                    .load(result)
-                    .into(imageDetail)
-            } )
-            viewModel.clearProductDetail(productDetail.id)
+        btnRemoveProduct.setOnClickListener {
+            val productId = viewModel.productDb.value?.id
+            if (productId != null) {
+                viewModel.removeProduct(productId)
+                viewModel.viewState.observe(viewLifecycleOwner){
+                    when(it){
+                        DetailViewModel.STATE_DONE->{
+                            Toast.makeText(requireContext(), "Producto eliminado.", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+            }
         }
-        btnRemoveProduct.setOnClickListener{
-            viewModel.removeProduct(productDetail)
-
-            Snackbar.make(v, "Producto eliminado...", Snackbar.LENGTH_SHORT).show()
-            findNavController().popBackStack()
-        }
-
     }
+
     private fun loadProductView(productDetail: Products){
         valItemProduct.text  = productDetail.item
         valBrandProduct.text = productDetail.brand
@@ -79,6 +78,19 @@ class DetailFragment : Fragment() {
         valCostPrice.text    = productDetail.costprice.toString()
         valSellingPrice.text = productDetail.sellingprice.toString()
     }
-//falta crear una vista que edite el producto
+    private fun getDetailProduct(){
+        viewModel.productDb.observe(viewLifecycleOwner){
+            if(it != null){
+                loadProductView(it)
+                viewModel.getProductImageUri()
 
+                viewModel.image.observe(viewLifecycleOwner, Observer {result ->
+                    Glide.with(this)
+                        .load(result)
+                        .into(imageDetail)
+                })
+            }
+        }
+    }
+//falta crear una vista que edite el producto
 }

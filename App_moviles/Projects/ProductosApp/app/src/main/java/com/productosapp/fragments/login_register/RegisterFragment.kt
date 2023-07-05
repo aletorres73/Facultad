@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
+import com.productosapp.entities.User
 
 class RegisterFragment : Fragment() {
 
@@ -45,33 +46,36 @@ class RegisterFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(RegisterViewModel::class.java)
-
-
     }
 
     override fun onStart() {
         super.onStart()
 
         btnMakeUser.setOnClickListener {
-            viewModel.name.value     = inputName.text.toString()
-            viewModel.lastname.value = inputLastName.text.toString()
-            viewModel.email.value    = inputEmail.text.toString()
-            viewModel.password.value = inputPass.text.toString()
-            viewModel.username.value = inputUser.text.toString()
-
-            viewModel.loadUser()
-
-            if(viewModel.checkEmptyUser()){
-                Toast.makeText(requireContext(),"Completa los campos vacíos", Toast.LENGTH_SHORT)
-                    .show()
-            }
-            else{
-                viewModel.createUser()
-                Toast.makeText(requireContext(),"Usuario nuevo creado", Toast.LENGTH_SHORT)
-                    .show()
-                findNavController().popBackStack()
+            loadUserFromInput()
+            viewModel.checkEmptyUser()
+            viewModel.chekError.observe(viewLifecycleOwner){result ->
+                if (result) {
+                    Toast.makeText(requireContext(), "Completa los campos vacíos", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    viewModel.createUser()
+                    Toast.makeText(requireContext(), "Usuario nuevo creado", Toast.LENGTH_SHORT)
+                        .show()
+                    findNavController().popBackStack()
+                }
             }
         }
+    }
+    private fun loadUserFromInput(){
+        var user : User = User()
+        user.name     = inputName.text.toString()
+        user.lastname = inputLastName.text.toString()
+        user.email    = inputEmail.text.toString()
+        user.password = inputPass.text.toString()
+        user.username = inputUser.text.toString()
+
+        viewModel.userDb.value = user
     }
 }
 

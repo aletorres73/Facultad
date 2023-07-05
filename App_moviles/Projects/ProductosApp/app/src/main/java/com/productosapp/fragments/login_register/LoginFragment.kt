@@ -9,17 +9,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.productosapp.R
 import com.productosapp.activities.SplashActivity
-import com.productosapp.database.FirebaseDataUserSource
-import com.productosapp.database.UserSource
-import com.productosapp.fragments.home.HomeViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.loadKoinModules
-import org.koin.dsl.module
 
 class LoginFragment : Fragment() {
 

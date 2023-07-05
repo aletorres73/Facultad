@@ -18,13 +18,13 @@ class LoginViewModel : ViewModel() {
     var checkLogin: MutableLiveData<Boolean> = MutableLiveData()
     var checkLogged: MutableLiveData<Boolean> = MutableLiveData()
     var userDb : MutableLiveData<User> = MutableLiveData()
-//    val checkView : LiveData<Boolean> get()= _checkView
 
     private val userSource : FirebaseDataUserSource by inject(FirebaseDataUserSource::class.java)
 
     fun checkLoggedCondition() {
         viewModelScope.launch (Dispatchers.Main){
-            userDb.value = userSource.getLoggedUser()
+            userSource.getLoggedUser()
+            userDb.value = userSource.userFb
             checkLogged.value = userDb.value != null
         }
     }
@@ -33,8 +33,10 @@ class LoginViewModel : ViewModel() {
     }
     fun isLoginOk() {
         viewModelScope.launch (Dispatchers.Main) {
-            userDb.value = userSource.getRegisteredUser(username.value!! , password.value!!)
-            checkLogin.value = userDb.value != null
+            userSource.getRegisteredUser(username.value!! , password.value!!)
+            userDb.value = userSource.userFb
+            checkLogin.value = true
+
         }
    }
     fun setLogged(){

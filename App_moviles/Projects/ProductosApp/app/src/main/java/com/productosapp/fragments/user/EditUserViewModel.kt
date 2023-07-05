@@ -11,16 +11,18 @@ import org.koin.java.KoinJavaComponent.inject
 class EditUserViewModel : ViewModel() {
 
     private val userSource : FirebaseDataUserSource by inject(FirebaseDataUserSource::class.java)
-    var user : MutableLiveData<User> = MutableLiveData()
+    var userFb : MutableLiveData<User> = MutableLiveData()
+    var userEdit : MutableLiveData<User> = MutableLiveData()
     fun getUserLogged(){
         viewModelScope.launch (Dispatchers.Main){
-            user.value = userSource.getLoggedUser()
+            userSource.getLoggedUser()
+            userFb.value = userSource.userFb
         }
     }
     fun updateAndSetUser(){
         viewModelScope.launch (Dispatchers.Main){
-            user.value?.let { userSource.update(it) }
-            user.value?.let { userSource.setLogged(it.id) }
+            userEdit.value?.let { userSource.update(it) }
+            userEdit.value?.let { userSource.setLogged(it.id) }
         }
     }
 }

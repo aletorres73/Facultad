@@ -1,41 +1,52 @@
 package com.productosapp.fragments.home
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.productosapp.database.*
 import com.productosapp.entities.Products
 import com.productosapp.entities.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-
 class HomeViewModel : ViewModel() {
 
-    var userDb: MutableLiveData<User> = MutableLiveData()
-    var productDB: MutableLiveData<MutableList<Products?>> = MutableLiveData()
-    private lateinit var productDb: MutableList<Products?>
+    var productUserListDb: MutableLiveData<MutableList<Products>> = MutableLiveData()
+    var viewState: MutableLiveData<String> = MutableLiveData()
+
 
     private val userSource: FirebaseDataUserSource by inject(FirebaseDataUserSource::class.java)
     private val productSource: FirebaseDataProductSource by inject(FirebaseDataProductSource::class.java)
 
-    fun getUserProduct() {
-        viewModelScope.launch (Dispatchers.Main) {
-            userDb.value = userSource.getLoggedUser()
-            productDB.value = userDb.value?.let { productSource.loadProductById(it.id)}
+    fun init(){
+        viewState.value = STATE_INIT
+    }
+    fun getList(){
+        viewModelScope.launch {
+            userSource.userFb?.let { productSource.loadProductByUserId(it.id) }
+            if(productSource.productListFb.isNullOrEmpty()){
+                viewState.value = STATE_EMPTY
+            }else{
+                viewState.value = STATE_LOADING
+            }
         }
     }
-//    fun getListProduct(){
-//        viewModelScope.launch(Dispatchers.Main) {
-//            productDB.value = userDb.value?.let { productSource.loadProductById(it.id) }
-//        }
-//    }
-    fun setDetailProduct(product: Products){
-        viewModelScope.launch(Dispatchers.Main) {
-            productSource.setDetail(product.id)
-        }
+    fun loadList() {
+        productUserListDb.value = productSource.productListFb
+        viewState.value = STATE_DONE
+    }
+    fun refresh(){
+        viewState.value = STATE_INIT
+    }
+    fun setDetailProduct(productForDetailView: Products) {
+        productSource.productFb = productForDetailView
+    }
+
+    companion object {
+        const val STATE_ERROR   = "error"
+        const val STATE_DONE    = "done"
+        const val STATE_LOADING = "loading"
+        const val STATE_EMPTY   = "empty"
+        const val STATE_INIT    = "init"
     }
 }

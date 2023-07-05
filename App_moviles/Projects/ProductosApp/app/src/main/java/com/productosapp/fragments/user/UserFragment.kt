@@ -8,13 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.productosapp.R
 import com.productosapp.activities.LoginActivity
 import com.productosapp.entities.User
+import com.productosapp.fragments.login_register.LoginViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+
 
 class UserFragment : Fragment() {
 
@@ -29,7 +30,6 @@ class UserFragment : Fragment() {
     lateinit var btnCloseSesion : Button
 
     private lateinit var viewModel: UserViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,20 +47,25 @@ class UserFragment : Fragment() {
         return v
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
+        viewModel.getUserLogged()
+        viewModel.user.value?.let { loadUser(it) }
     }
 
     override fun onStart() {
         super.onStart()
 
-        if(viewModel.getUserLogged()) {
-            viewModel.user.value?.let { loadUser(it) }
-        }
         btnCloseSesion.setOnClickListener {
-            viewModel.user.value?.let { it1 -> viewModel.clearUserLogged(it1.id) }
-            goToSplash()
+            viewModel.clearLoggedUser()
+            viewModel.checkLogged.observe(viewLifecycleOwner){result ->
+                if(!result){
+                    goToLogin()
+                }
+            }
+
         }
         btnEditUser.setOnClickListener {
             val action = UserFragmentDirections.actionUserFragmentToEditUserFragment()
@@ -73,7 +78,7 @@ class UserFragment : Fragment() {
         txtUserName.text = userLogged.username
         txtEmail.text    = userLogged.email
     }
-    private fun goToSplash(){
+    private fun goToLogin(){
         val contextActivity = requireContext()
         val intent = Intent(contextActivity, LoginActivity::class.java)
         startActivity(intent)

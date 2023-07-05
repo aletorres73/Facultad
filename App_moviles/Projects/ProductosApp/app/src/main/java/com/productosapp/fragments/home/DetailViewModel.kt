@@ -13,26 +13,25 @@ class DetailViewModel : ViewModel() {
 
     private val productSource : FirebaseDataProductSource by inject(FirebaseDataProductSource::class.java)
 
-    private val productDb : MutableLiveData<Products> = MutableLiveData()
-    val image :MutableLiveData<String>    = MutableLiveData()
+    val productDb    : MutableLiveData<Products> = MutableLiveData()
+    val image        : MutableLiveData<String>    = MutableLiveData()
+    val viewState    : MutableLiveData<String>   = MutableLiveData()
 
-    fun getProductDetail(): Products? {
-        viewModelScope.launch(Dispatchers.Main) {
-            productDb.value= productSource.findProductDetail()!!
-        }
-        return productDb.value
+    companion object{
+        const val STATE_DONE    = "done"
+        const val STATE_REMOVING= "removing"
+    }
+
+    fun getProductDetail() {
+        productDb.value = productSource.productFb
     }
     fun getProductImageUri() {
         image.value = productDb.value?.imageuri
     }
-    fun removeProduct(product: Products?){
-        viewModelScope.launch(Dispatchers.Main){
-            productSource.delete(product)
-        }
-    }
-    fun clearProductDetail(id : Int){
-        viewModelScope.launch(Dispatchers.Main){
-            productSource.clearDetail(id)
+    fun removeProduct(id : Int){
+        viewModelScope.launch(){
+            productSource.delete(id)
+            viewState.value = STATE_DONE
         }
     }
 }

@@ -24,11 +24,12 @@ class EditUserFragment : Fragment() {
     lateinit var btnUpdatetUser  : Button
 
     private lateinit var viewModel: EditUserViewModel
+    lateinit var user : User
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         v = inflater.inflate(R.layout.fragment_edit_user, container, false)
 
         editName        = v.findViewById(R.id.inputNameEdit)
@@ -39,24 +40,37 @@ class EditUserFragment : Fragment() {
 
         return v
     }
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(EditUserViewModel::class.java)
+        viewModel.getUserLogged()
+        viewModel.userFb.observe(viewLifecycleOwner){ it->loadUser(it)}
     }
     override fun onStart() {
         super.onStart()
-        viewModel.getUserLogged()
 
         btnUpdatetUser.setOnClickListener {
-            viewModel.user.value?.let { it->loadUser(it)}
+            getInput()
             viewModel.updateAndSetUser()
             findNavController().popBackStack()
         }
     }
     private fun loadUser(userLogged: User){
-        editName.text     = userLogged.name
-        editLastName.text = userLogged.lastname
-        editUserName.text = userLogged.username
-        editEmail.text    = userLogged.email
+        user = userLogged
+
+        editName.text     = user.name
+        editLastName.text = user.lastname
+        editUserName.text = user.username
+        editEmail.text    = user.email
+    }
+    private fun getInput(){
+        user.name       = editName.text.toString()
+        user.lastname   = editLastName.text.toString()
+        user.username   = editUserName.text.toString()
+        user.email      = editEmail.text.toString()
+
+        viewModel.userEdit.value = user
     }
 }

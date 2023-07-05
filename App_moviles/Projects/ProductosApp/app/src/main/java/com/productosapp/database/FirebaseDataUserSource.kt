@@ -1,10 +1,13 @@
 package com.productosapp.database
 
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.productosapp.entities.User
+import com.productosapp.entities.userModule
 import kotlinx.coroutines.tasks.await
+import java.util.concurrent.locks.Condition
 
 class FirebaseDataUserSource (): UserSource{
 
@@ -13,18 +16,18 @@ class FirebaseDataUserSource (): UserSource{
     private val collectionName : String = "users"
     private val collection = db.collection(collectionName)
 
-    override suspend fun getLoggedUser(): User? {
+    var userFb : User? = User()
+
+    override suspend fun getLoggedUser(){
         val querySnapshot = collection
             .whereEqualTo("logged", true)
             .get()
             .await()
 
         val userDocument = querySnapshot.documents.firstOrNull()
-        val user = userDocument?.toObject<User>()
-//        return user ?: throw IllegalStateException("User is null")
-        return user
+        userFb = userDocument?.toObject()
     }
-    override suspend fun getRegisteredUser(username: String, password: String): User? {
+    override suspend fun getRegisteredUser(username: String, password: String){
         val querySnapshot = collection
             .whereEqualTo("username", username)
             .whereEqualTo("password", password)
@@ -32,8 +35,7 @@ class FirebaseDataUserSource (): UserSource{
             .await()
 
         val userDocument = querySnapshot.documents.firstOrNull()
-        val user = userDocument?.toObject<User>()
-        return user
+        userFb = userDocument?.toObject<User>()
     }
     override suspend fun loadUserByUsername(username: String): User {
         val querySnapshot = collection.whereEqualTo("username", username).get().await()
@@ -46,14 +48,17 @@ class FirebaseDataUserSource (): UserSource{
         }
     }
     override suspend fun getUserId(): Int {
-        val querySnapshot = collection.get().await()
+        val querySnapshot = collection
+            .orderBy("id", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .await()
 
         return if (querySnapshot.isEmpty) {0}
         else {
-            val documents = querySnapshot.documents
-            val lastDocument = documents[documents.size - 1]
-            val user = lastDocument.toObject<User>()
-            user?.id ?: throw IllegalStateException("User ID is null")
+            val lastDocument = querySnapshot.documents.lastOrNull()
+            val user = lastDocument?.toObject<User>()
+            (user?.id?.plus(1)) ?: 0
         }
     }
     override suspend fun insertUser(user: User) {
@@ -63,23 +68,23 @@ class FirebaseDataUserSource (): UserSource{
             throw IllegalStateException("Failed to insert user into Firestore: ${e.message}")
         }
     }
-    override suspend fun clearLoggedUser(id: Int) {
+    override suspend fun clearLoggedUser(id: Int, condition: Boolean) {
         val querySnapshot = collection
             .whereEqualTo("id",id)
             .get()
             .await()
 
-        if(!querySnapshot.isEmpty) {
+        if (!querySnapshot.isEmpty) {
             val userDocument = querySnapshot.documents.first()
             userDocument
                 .reference
-                .update("logged", false)
+                .update("logged",condition)
                 .await()
+        }else{
+            throw IllegalStateException("User not found in clear logged user")
         }
-        else{
-            throw IllegalStateException("Error in clear logged user")
+
         }
-    }
     override suspend fun setLogged(id: Int) {
         val querySnapshot = collection
             .whereEqualTo("id",id)
@@ -113,5 +118,14 @@ class FirebaseDataUserSource (): UserSource{
                 throw IllegalStateException("Error updating user: ${e.message}")
             }
         }
+    }
+    override suspend fun getLoggedUserById(id: Int) {
+        val querySnapshot = collection
+            .whereEqualTo("id", id)
+            .get()
+            .await()
+
+        val userDocument = querySnapshot.documents.firstOrNull()
+        userFb = userDocument?.toObject()
     }
 }

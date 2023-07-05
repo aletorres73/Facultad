@@ -12,16 +12,23 @@ class UserViewModel : ViewModel() {
 
     private val userSource: FirebaseDataUserSource by inject(FirebaseDataUserSource::class.java)
     var user : MutableLiveData<User> = MutableLiveData()
+    var checkLogged: MutableLiveData<Boolean > = MutableLiveData()
 
-    fun getUserLogged(): Boolean{
-        viewModelScope.launch(Dispatchers.Main){
-           user.value= userSource.getLoggedUser()
-        }
-        return user.value!=null
+    fun getUserLogged(){
+        user.value = userSource.userFb
     }
-    fun clearUserLogged(id : Int){
+    fun clearLoggedUser(){
         viewModelScope.launch(Dispatchers.Main){
-            userSource.clearLoggedUser(id)
+            val condition = false
+
+            user.value?.let { userSource.clearLoggedUser(it.id ,condition) }
+            user.value?.let { userSource.getLoggedUserById(it.id) }
+
+            user.value = userSource.userFb
+            if(!user.value?.logged!!)
+            {
+                checkLogged.value = false
+            }
         }
     }
 }

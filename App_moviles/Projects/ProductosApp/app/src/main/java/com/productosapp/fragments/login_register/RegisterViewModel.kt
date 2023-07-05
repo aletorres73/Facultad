@@ -1,66 +1,39 @@
 package com.productosapp.fragments.login_register
 
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.productosapp.database.ProductSource
+import com.productosapp.database.FirebaseDataUserSource
 import com.productosapp.database.UserSource
 import com.productosapp.entities.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 
-class RegisterViewModel(private val userSource: UserSource, private val productSource: ProductSource): ViewModel() {
+class RegisterViewModel: ViewModel() {
 
-    val db = Firebase.firestore
+    private val userSource: UserSource by inject(FirebaseDataUserSource::class.java)
 
-    val name    : MutableLiveData<String> = MutableLiveData()
-    val lastname: MutableLiveData<String> = MutableLiveData()
-    val email   : MutableLiveData<String> = MutableLiveData()
-    val password: MutableLiveData<String> = MutableLiveData()
-    val username: MutableLiveData<String> = MutableLiveData()
-
-    private lateinit var userDb : User
-
-    fun loadUser() {
-        viewModelScope.launch(Dispatchers.Main) {
-            userDb = userSource.loadUserByUsername(username.value!!)
-        }
-
+    var userDb: MutableLiveData<User> = MutableLiveData()
+    var chekError:  MutableLiveData<Boolean> = MutableLiveData()
+//    fun loadUserToRepository() {
+//        viewModelScope.launch(Dispatchers.Main) {
+//            userDb.value?.let { userSource.insertUser(it) }
+//        }
+//    }
+    fun checkEmptyUser(){
+        chekError.value = userDb.value?.name.isNullOrEmpty() ||
+                          userDb.value?.lastname.isNullOrEmpty() ||
+                          userDb.value?.email.isNullOrEmpty() ||
+                          userDb.value?.password.isNullOrEmpty() ||
+                          userDb.value?.username.isNullOrEmpty()
     }
-
-    fun checkEmptyUser(): Boolean{
-
-        if (name.value!!.isEmpty()) {
-           return true
-        } else if (lastname.value!!.isEmpty()) {
-            return true
-        } else if (email.value!!.isEmpty()) {
-            return true
-        } else if (password.value!!.isEmpty()) {
-            return true
-        } else if (username.value!!.isEmpty()) {
-            return true
-        }
-        return false
-    }
-
     fun createUser(){
         viewModelScope.launch(Dispatchers.Main) {
             val id = userSource.getUserId()
-            val user = User(
-                id = id,
-                logged = false,
-                name = name.value!!,
-                lastname = lastname.value!!,
-                username = username.value!!,
-                email = email.value!!,
-                password = password.value!!
-            )
-            userSource.insertUser(user)
+            userDb.value?.id = id
+            userDb.value?.let { userSource.insertUser(it) }
         }
     }
 }

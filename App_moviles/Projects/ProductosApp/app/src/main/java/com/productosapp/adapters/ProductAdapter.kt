@@ -6,14 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.productosapp.R
 import com.productosapp.entities.Products
 
 class ProductAdapter(
-    private var productlist: MutableList<Products?>?,
+    private var productlist: MutableList<Products>,
     var onClick: (Int) -> Unit
 ):RecyclerView.Adapter<ProductAdapter.ProductHolder>() {
 
@@ -72,14 +71,14 @@ class ProductAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == productlist?.size!! - 1) {
+        return if (position == productlist.size - 1) {
             VIEW_TYPE_CREATE_PRODUCT
         } else {
             VIEW_TYPE_PRODUCT
         }
     }
 
-    override fun getItemCount(): Int = productlist?.size!!
+    override fun getItemCount(): Int = productlist.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -90,12 +89,12 @@ class ProductAdapter(
     override fun onBindViewHolder(holder: ProductHolder, position: Int) {
 
         if (position < (itemCount + 1)) {
-            holder.setItem(productlist?.get(position)?.item!!)
-            holder.setBrand(productlist?.get(position)?.brand!!)
-            holder.setModel(productlist?.get(position)?.model!!)
-            holder.setCostPrice(productlist?.get(position)?.costprice!!)
-            holder.setSellPrice(productlist?.get(position)?.sellingprice!!)
-            holder.setImage(productlist?.get(position)?.imageuri!!)
+            holder.setItem(productlist.get(position).item)
+            holder.setBrand(productlist.get(position).brand)
+            holder.setModel(productlist.get(position).model)
+            holder.setCostPrice(productlist.get(position).costprice)
+            holder.setSellPrice(productlist.get(position).sellingprice)
+            holder.setImage(productlist.get(position).imageuri)
             holder.getCard().setOnClickListener {
                 //lo que se quiera hacer cuando se hace click
                 onClick(position) // ejecuta la función onClick que se la pasa una position
@@ -108,4 +107,5 @@ class ProductAdapter(
 //            }
         }
     }
+
 }
