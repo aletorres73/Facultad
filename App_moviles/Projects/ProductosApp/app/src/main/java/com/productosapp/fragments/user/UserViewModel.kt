@@ -18,17 +18,8 @@ class UserViewModel : ViewModel() {
         user.value = userSource.userFb
     }
     fun clearLoggedUser(){
-        viewModelScope.launch(Dispatchers.Main){
-            val condition = false
-
-            user.value?.let { userSource.clearLoggedUser(it.id ,condition) }
-            user.value?.let { userSource.getLoggedUserById(it.id) }
-
-            user.value = userSource.userFb
-            if(!user.value?.logged!!)
-            {
-                checkLogged.value = false
-            }
+        viewModelScope.launch(){
+            checkLogged.value = userSource.closeSestion()
         }
     }
 }

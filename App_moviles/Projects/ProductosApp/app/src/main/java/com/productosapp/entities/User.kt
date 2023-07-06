@@ -7,20 +7,20 @@ class User() {
     var username: String = ""
     var lastname: String = ""
     var name: String = ""
-    var logged: Boolean = false
-    var id: Int = 0
+//    var logged: Boolean = false
+//    var id: Int = 0
 
     constructor(
-        id: Int,
-        logged: Boolean,
+//        id: Int,
+//        logged: Boolean,
         name: String,
         lastname: String,
         username: String,
         email: String,
         password: String
     ) : this() {
-        this.id = id
-        this.logged = logged
+//        this.id = id
+//        this.logged = logged
         this.name = name
         this.lastname = lastname
         this.username = username

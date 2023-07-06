@@ -1,9 +1,12 @@
 package com.productosapp.database
 
 
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -41,8 +44,7 @@ class FirebaseDataUserSource (): UserSource {
 
         if (querySnapshot.isEmpty) {
             userFb = null
-        }
-        else {
+        } else {
             val userDocument = querySnapshot.documents.firstOrNull()
             userFb = userDocument?.toObject<User>()
         }
@@ -60,24 +62,43 @@ class FirebaseDataUserSource (): UserSource {
     }
 
     override suspend fun getUserId(): Int {
-        val querySnapshot = collection
-            .orderBy("id", Query.Direction.DESCENDING)
-            .limit(1)
-            .get()
-            .await()
+//        val querySnapshot = collection
+//            .orderBy("id", Query.Direction.DESCENDING)
+//            .limit(1)
+//            .get()
+//            .await()
+//
+//        return if (querySnapshot.isEmpty) {
+//            0
+//        } else {
+//            val lastDocument = querySnapshot.documents.lastOrNull()
+//            val user = lastDocument?.toObject<User>()
+//            (user?.id?.plus(1)) ?: 0
+//        }
+        val collectionRef = FirebaseFirestore.getInstance().collection("users")
+        var id = 0
 
-        return if (querySnapshot.isEmpty) {
-            0
-        } else {
-            val lastDocument = querySnapshot.documents.lastOrNull()
-            val user = lastDocument?.toObject<User>()
-            (user?.id?.plus(1)) ?: 0
-        }
+        collectionRef
+            .orderBy(
+                FieldPath.documentId(), Query.Direction.DESCENDING) // Ordenar por el ID del documento en orden descendente
+            .limit(1) // Obtener solo 1 resultado (el último usuario)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val lastUserDocument = querySnapshot.documents[0]
+                    id = lastUserDocument.id.toInt() + 1
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error al obtener el último usuario: $exception")
+            }
+        return id
     }
 
-    override suspend fun insertUser(user: User) {
+
+    override suspend fun insertUser(user: User, documentId :String) {
         try {
-            collection.add(user).await()
+            collection.document(documentId).set(user).await()
         } catch (e: Exception) {
             throw IllegalStateException("Failed to insert user into Firestore: ${e.message}")
         }
@@ -118,24 +139,24 @@ class FirebaseDataUserSource (): UserSource {
         }
     }
 
-    override suspend fun update(user: User) {
-        val querySnapshot = collection
-            .whereEqualTo("id", user.id)
-            .get()
-            .await()
-        if (!querySnapshot.isEmpty) {
-            try {
-                querySnapshot
-                    .documents.first()
-                    .reference
-                    .set(user)
-                    .await()
-                println("User updated successfully")
-            } catch (e: Exception) {
-                throw IllegalStateException("Error updating user: ${e.message}")
-            }
-        }
-    }
+//    override suspend fun update(user: User) {
+//        val querySnapshot = collection
+//            .whereEqualTo("id", user.id)
+//            .get()
+//            .await()
+//        if (!querySnapshot.isEmpty) {
+//            try {
+//                querySnapshot
+//                    .documents.first()
+//                    .reference
+//                    .set(user)
+//                    .await()
+//                println("User updated successfully")
+//            } catch (e: Exception) {
+//                throw IllegalStateException("Error updating user: ${e.message}")
+//            }
+//        }
+//    }
 
     override suspend fun getLoggedUserById(id: Int) {
         val querySnapshot = collection
@@ -162,5 +183,24 @@ class FirebaseDataUserSource (): UserSource {
 
     override suspend fun init() {
         auth = Firebase.auth
+    }
+
+    override suspend fun createAccount(email: String, password: String, activity: FragmentActivity) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(activity) { task ->
+                if (task.isSuccessful) {
+                    if (auth.currentUser != null) {
+                        currentUser = true
+                    }
+                } else {
+                    currentUser = false
+                }
+            }.await()
+    }
+    override suspend fun closeSestion(): Boolean{
+        val auth = FirebaseAuth.getInstance()
+        auth.signOut()
+        val currentUser = auth.currentUser
+        return currentUser == null
     }
 }

@@ -54,21 +54,26 @@ class RegisterFragment : Fragment() {
         btnMakeUser.setOnClickListener {
             loadUserFromInput()
             viewModel.checkEmptyUser()
-            viewModel.chekError.observe(viewLifecycleOwner){result ->
-                if (result) {
-                    Toast.makeText(requireContext(), "Completa los campos vacíos", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    viewModel.createUser()
-                    Toast.makeText(requireContext(), "Usuario nuevo creado", Toast.LENGTH_SHORT)
-                        .show()
-                    findNavController().popBackStack()
+            viewModel.viewState.observe(viewLifecycleOwner){result ->
+                when(result) {
+                    RegisterViewModel.STATE_CREATING->{
+                        viewModel.createUser(requireActivity())
+                    }
+                    RegisterViewModel.STATE_DONE->{
+                        Toast.makeText(requireContext(), "Usuario nuevo creado", Toast.LENGTH_SHORT)
+                            .show()
+                        findNavController().popBackStack()
+                    }
+                    RegisterViewModel.STATE_ERROR->{
+                        Toast.makeText(requireContext(), "Completa los campos vacíos", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         }
     }
     private fun loadUserFromInput(){
-        var user : User = User()
+        val user = User()
         user.name     = inputName.text.toString()
         user.lastname = inputLastName.text.toString()
         user.email    = inputEmail.text.toString()

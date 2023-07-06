@@ -13,11 +13,13 @@ interface UserSource {
     suspend fun getRegisteredUser(username : String)
     suspend fun loadUserByUsername(username: String) : User
     suspend fun getUserId(): Int
-    suspend fun insertUser(user: User)
+    suspend fun insertUser(user: User, documentId: String)
     suspend fun clearLoggedUser(id: Int, condition: Boolean)
     suspend fun setLogged(id: Int)
-    suspend fun update(user: User)
+//    suspend fun update(user: User)
     suspend fun getLoggedUserById(id: Int)
     suspend fun sigIn(email: String, password: String, activity: FragmentActivity)
     suspend fun init()
+    suspend fun createAccount(email: String, password: String, activity: FragmentActivity)
+    suspend fun closeSestion(): Boolean
 }

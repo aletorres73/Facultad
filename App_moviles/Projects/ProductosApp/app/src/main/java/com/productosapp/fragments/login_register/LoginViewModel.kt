@@ -39,7 +39,6 @@ class LoginViewModel : ViewModel() {
             }
         }
    }
-
     fun init(activity: FragmentActivity){
         requireActivity = activity
         viewModelScope.launch (){
