@@ -15,7 +15,11 @@ class UserViewModel : ViewModel() {
     var checkLogged: MutableLiveData<Boolean > = MutableLiveData()
 
     fun getUserLogged(){
-        user.value = userSource.userFb
+        viewModelScope.launch {
+            userSource.getLoggedUserById()
+            user.value = userSource.userFb
+        }
+
     }
     fun clearLoggedUser(){
         viewModelScope.launch(){

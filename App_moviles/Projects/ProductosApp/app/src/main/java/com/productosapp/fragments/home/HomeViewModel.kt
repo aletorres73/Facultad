@@ -23,7 +23,8 @@ class HomeViewModel : ViewModel() {
     }
     fun getList(){
         viewModelScope.launch {
-            userSource.userFb?.let { productSource.loadProductByUserId(it.id) }
+            userSource.getUserId()
+            userSource.userFb?.let { productSource.loadProductByUserId(userSource.currentUID) }
             if(productSource.productListFb.isNullOrEmpty()){
                 viewState.value = STATE_EMPTY
             }else{

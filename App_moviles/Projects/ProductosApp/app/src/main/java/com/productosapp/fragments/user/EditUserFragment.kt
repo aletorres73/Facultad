@@ -46,7 +46,7 @@ class EditUserFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(EditUserViewModel::class.java)
         viewModel.getUserLogged()
-        viewModel.userFb.observe(viewLifecycleOwner){ it->loadUser(it)}
+        viewModel.userDb.observe(viewLifecycleOwner){ it->loadUser(it)}
     }
     override fun onStart() {
         super.onStart()

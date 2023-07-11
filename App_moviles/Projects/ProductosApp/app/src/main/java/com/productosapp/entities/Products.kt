@@ -1,8 +1,8 @@
 package com.productosapp.entities
 
 class Products(){
-    var id    :      Int = 0
-    var userid:      Int = 0
+    var id:          Int=0
+    var userid:      String=""
     var item:        String=""
     var detail:      Int=0
     var brand:       String=""
@@ -12,15 +12,15 @@ class Products(){
     var imageuri:    String=""
 
     constructor (
-    id    : Int,
-    userid: Int,
-    item: String,
-    detail: Int,
-    brand: String,
-    model: String,
-    costprice: Int,
-    sellingprice: Int,
-    imageuri: String,
+        id:     Int,
+        userid: String,
+        item: String,
+        detail: Int,
+        brand: String,
+        model: String,
+        costprice: Int,
+        sellingprice: Int,
+        imageuri: String,
     ):this(){
         this.id           = id
         this.userid       = userid

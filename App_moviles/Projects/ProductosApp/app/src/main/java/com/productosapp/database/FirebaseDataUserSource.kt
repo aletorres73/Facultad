@@ -1,18 +1,15 @@
 package com.productosapp.database
 
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldPath
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.productosapp.entities.User
 import kotlinx.coroutines.tasks.await
+import java.net.UnknownServiceException
 
 class FirebaseDataUserSource (): UserSource {
 
@@ -24,29 +21,18 @@ class FirebaseDataUserSource (): UserSource {
     var userFb: User? = User()
     var currentUser: Boolean = false
 
-    override suspend fun getLoggedUser() {
+    lateinit var currentUID : String
+
+    override suspend fun getRegisteredUser() {
         val querySnapshot = collection
-            .whereEqualTo("logged", true)
+            .document(currentUID)
             .get()
             .await()
 
-        val userDocument = querySnapshot.documents.firstOrNull()
-        userFb = userDocument?.toObject()
-    }
-
-    //    override suspend fun getRegisteredUser(username: String, password: String){
-    override suspend fun getRegisteredUser(username: String) {
-        val querySnapshot = collection
-            .whereEqualTo("email", username)
-//            .whereEqualTo("password", password)
-            .get()
-            .await()
-
-        if (querySnapshot.isEmpty) {
+        if (querySnapshot.exists() ) {
             userFb = null
         } else {
-            val userDocument = querySnapshot.documents.firstOrNull()
-            userFb = userDocument?.toObject<User>()
+            userFb = querySnapshot.toObject<User>()
         }
     }
 
@@ -60,112 +46,35 @@ class FirebaseDataUserSource (): UserSource {
             throw IllegalStateException("No user found by ID")
         }
     }
-
-    override suspend fun getUserId(): Int {
-//        val querySnapshot = collection
-//            .orderBy("id", Query.Direction.DESCENDING)
-//            .limit(1)
-//            .get()
-//            .await()
-//
-//        return if (querySnapshot.isEmpty) {
-//            0
-//        } else {
-//            val lastDocument = querySnapshot.documents.lastOrNull()
-//            val user = lastDocument?.toObject<User>()
-//            (user?.id?.plus(1)) ?: 0
-//        }
-        val collectionRef = FirebaseFirestore.getInstance().collection("users")
-        var id = 0
-
-        collectionRef
-            .orderBy(
-                FieldPath.documentId(), Query.Direction.DESCENDING) // Ordenar por el ID del documento en orden descendente
-            .limit(1) // Obtener solo 1 resultado (el último usuario)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    val lastUserDocument = querySnapshot.documents[0]
-                    id = lastUserDocument.id.toInt() + 1
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("Firestore", "Error al obtener el último usuario: $exception")
-            }
-        return id
+    override suspend fun getUserId() {
+        val user = Firebase.auth.currentUser
+        user?.let {
+            currentUID =it.uid
+        }
     }
-
-
-    override suspend fun insertUser(user: User, documentId :String) {
+    override suspend fun insertUser(user: User) {
         try {
-            collection.document(documentId).set(user).await()
+            collection.document(currentUID).set(user).await()
         } catch (e: Exception) {
             throw IllegalStateException("Failed to insert user into Firestore: ${e.message}")
         }
     }
-
-    override suspend fun clearLoggedUser(id: Int, condition: Boolean) {
-        val querySnapshot = collection
-            .whereEqualTo("id", id)
-            .get()
-            .await()
-
-        if (!querySnapshot.isEmpty) {
-            val userDocument = querySnapshot.documents.first()
-            userDocument
-                .reference
-                .update("logged", condition)
-                .await()
-        } else {
-            throw IllegalStateException("User not found in clear logged user")
-        }
-
+    override suspend fun update(user: User) {
+       collection.document(currentUID)
+           .update(
+               mapOf(
+                   "name" to user.name,
+                   "lastname" to user.lastname,
+                   "username" to user.username,
+                   "email" to user.email,
+                   ),
+           )
+           .await()
     }
 
-    override suspend fun setLogged(id: Int) {
-        val querySnapshot = collection
-            .whereEqualTo("id", id)
-            .get()
-            .await()
-
-        if (!querySnapshot.isEmpty) {
-            val userDocument = querySnapshot.documents.first()
-            userDocument
-                .reference
-                .update("logged", true)
-                .await()
-        } else {
-            throw IllegalStateException("Error in clear logged user")
-        }
-    }
-
-//    override suspend fun update(user: User) {
-//        val querySnapshot = collection
-//            .whereEqualTo("id", user.id)
-//            .get()
-//            .await()
-//        if (!querySnapshot.isEmpty) {
-//            try {
-//                querySnapshot
-//                    .documents.first()
-//                    .reference
-//                    .set(user)
-//                    .await()
-//                println("User updated successfully")
-//            } catch (e: Exception) {
-//                throw IllegalStateException("Error updating user: ${e.message}")
-//            }
-//        }
-//    }
-
-    override suspend fun getLoggedUserById(id: Int) {
-        val querySnapshot = collection
-            .whereEqualTo("id", id)
-            .get()
-            .await()
-
-        val userDocument = querySnapshot.documents.firstOrNull()
-        userFb = userDocument?.toObject()
+    override suspend fun getLoggedUserById() {
+        val userDocument = collection.document(currentUID).get().await()
+        userFb = userDocument.toObject()
     }
 
     override suspend fun sigIn(email: String, password: String, activity: FragmentActivity) {
@@ -178,9 +87,8 @@ class FirebaseDataUserSource (): UserSource {
                 } else {
                     currentUser = false
                 }
-            }.await()
+            }
     }
-
     override suspend fun init() {
         auth = Firebase.auth
     }
@@ -195,7 +103,8 @@ class FirebaseDataUserSource (): UserSource {
                 } else {
                     currentUser = false
                 }
-            }.await()
+            }
+            .await()
     }
     override suspend fun closeSestion(): Boolean{
         val auth = FirebaseAuth.getInstance()

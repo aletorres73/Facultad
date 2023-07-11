@@ -68,19 +68,26 @@ class RegisterFragment : Fragment() {
                         Toast.makeText(requireContext(), "Completa los campos vacíos", Toast.LENGTH_SHORT)
                             .show()
                     }
+                    RegisterViewModel.STATE_PASS_ERROR->{
+                        Toast.makeText(requireContext(), "La contraseña requiere un mínimo de 6 carácteres"
+                            , Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         }
     }
     private fun loadUserFromInput(){
-        val user = User()
-        user.name     = inputName.text.toString()
-        user.lastname = inputLastName.text.toString()
-        user.email    = inputEmail.text.toString()
-        user.password = inputPass.text.toString()
-        user.username = inputUser.text.toString()
+        var newUser = User()
+        newUser.name     = inputName.text.toString()
+        newUser.lastname = inputLastName.text.toString()
+        newUser.email    = inputEmail.text.toString()
+        newUser.username = inputUser.text.toString()
 
-        viewModel.userDb.value = user
+        viewModel.pasword.value = inputPass.text.toString()
+        viewModel.userDb.value = newUser
+
     }
+
 }
 

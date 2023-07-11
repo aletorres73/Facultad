@@ -18,32 +18,39 @@ class RegisterViewModel: ViewModel() {
     private val userSource: UserSource by inject(FirebaseDataUserSource::class.java)
 
     var userDb: MutableLiveData<User> = MutableLiveData()
+    var pasword: MutableLiveData<String> = MutableLiveData()
     var viewState : MutableLiveData<String> = MutableLiveData()
 
     companion object{
         const val STATE_CREATING = "creating"
         const val STATE_DONE = "done"
         const val STATE_ERROR = "error"
+        const val STATE_PASS_ERROR = "pass"
     }
 
     fun checkEmptyUser(){
         val chekError =   userDb.value?.name.isNullOrEmpty()        ||
                           userDb.value?.lastname.isNullOrEmpty()    ||
                           userDb.value?.email.isNullOrEmpty()       ||
-                          userDb.value?.password.isNullOrEmpty()    ||
+                          pasword.value.isNullOrEmpty()    ||
                           userDb.value?.username.isNullOrEmpty()
-        if (!chekError){
+        if(pasword.value?.length!! < 6)
+        {
+            viewState.value = STATE_PASS_ERROR
+        }
+        else if (!chekError){
             viewState.value = STATE_CREATING
         }else{
             viewState.value = STATE_ERROR
         }
+
     }
     fun createUser(activity: FragmentActivity){
-        viewModelScope.launch(Dispatchers.Main) {
-            val id = userSource.getUserId().toString()
-            userSource.createAccount(userDb.value?.email!!, userDb.value?.password!!, activity)
+        viewModelScope.launch() {
+            pasword.value?.let { userSource.createAccount(userDb.value?.email!!, it, activity) }
+            userSource.getUserId()
             userDb.value?.let {
-                userSource.insertUser(it, id)
+                    userSource.insertUser(it)
                 viewState.value = STATE_DONE
             }
         }

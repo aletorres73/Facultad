@@ -1,29 +1,34 @@
 package com.productosapp.database
 
+import android.net.Uri
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.productosapp.entities.Products
 import kotlinx.coroutines.tasks.await
+import java.io.File
 
 class FirebaseDataProductSource (): ProductSource {
 
     val db = Firebase.firestore
-    private val colecctionName : String = "products"
+    val storage = Firebase.storage
+
+    private val colecctionName: String = "products"
     private val collection = db.collection(colecctionName)
 
     var productListFb = mutableListOf<Products>()
-    var productFb : Products = Products()
+    var productFb: Products = Products()
 
-    override suspend fun loadProductByUserId(userid: Int){
+    override suspend fun loadProductByUserId(userid: String) {
         val productList = mutableListOf<Products>()
         val querySnapshot = collection
             .whereEqualTo("userid", userid)
             .get()
             .await()
 
-        if(!querySnapshot.isEmpty){
+        if (!querySnapshot.isEmpty) {
             for (document in querySnapshot.documents) {
                 val product = document.toObject<Products>()
                 if (product != null) {
@@ -31,26 +36,27 @@ class FirebaseDataProductSource (): ProductSource {
                 } else {
                     throw IllegalStateException("No document found with the specified ID")
                 }
-                productListFb =productList
+                productListFb = productList
             }
-        }
-        else{
-        productListFb = productList
+        } else {
+            productListFb = productList
         }
     }
+
     override suspend fun findProductDetail(): Products {
         val querySnapshot = collection
             .whereEqualTo("detail", true)
             .get()
             .await()
-        if(!querySnapshot.isEmpty){
+        if (!querySnapshot.isEmpty) {
             val productDocument = querySnapshot.documents.first()
             val product = productDocument.toObject<Products>()
             return product ?: throw IllegalStateException("Product is null")
-        }else{
+        } else {
             throw IllegalStateException("No product detail")
         }
     }
+
     override suspend fun getProductId(): Int {
         val querySnapshot = collection
             .orderBy("id", Query.Direction.DESCENDING)
@@ -58,14 +64,16 @@ class FirebaseDataProductSource (): ProductSource {
             .get()
             .await()
 
-        return if (querySnapshot.isEmpty) {0}
-        else {
+        return if (querySnapshot.isEmpty) {
+            0
+        } else {
             val lastDocument = querySnapshot.documents.lastOrNull()
             val product = lastDocument?.toObject<Products>()
             (product?.id?.plus(1)) ?: 0
 
         }
     }
+
     override suspend fun insertProduct(product: Products) {
         try {
             productListFb.add(product)
@@ -74,10 +82,11 @@ class FirebaseDataProductSource (): ProductSource {
             throw IllegalStateException("Failed to insert product into Firestore: ${e.message}")
         }
     }
-    override suspend fun delete(id : Int) {
-        try{
+
+    override suspend fun delete(id: Int) {
+        try {
             val querySnapshot = collection
-                .whereEqualTo("id",id)
+                .whereEqualTo("id", id)
                 .get()
                 .await()
             val documentRef = querySnapshot
@@ -86,10 +95,11 @@ class FirebaseDataProductSource (): ProductSource {
                 .delete()
                 .await()
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             throw IllegalStateException("Failed to remove product into Firestore: ${e.message}")
         }
     }
+
     override suspend fun setDetail(id: Int) {
         val querySnapshot = collection
             .whereEqualTo("id", id)
@@ -102,9 +112,10 @@ class FirebaseDataProductSource (): ProductSource {
             throw IllegalStateException("No document found with the specified ID")
         }
     }
+
     override suspend fun clearDetail(id: Int) {
         val querySnapshot = collection
-            .whereEqualTo("id",id)
+            .whereEqualTo("id", id)
             .get()
             .await()
         if (!querySnapshot.isEmpty) {
@@ -115,8 +126,32 @@ class FirebaseDataProductSource (): ProductSource {
         }
     }
 
+    override suspend fun uploadImage(path: String): String {
+        lateinit var downloadUri: String
 
+        val storageRef = storage.reference
+        val file = Uri.fromFile(File(path))
+        val ref = storageRef.child("images/${file.lastPathSegment}")
+        val uploadTask = ref.putFile(file)
+
+        uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            ref.downloadUrl
+        }.addOnCompleteListener { task ->
+            downloadUri = if (task.isSuccessful) {
+                task.result.toString()
+                } else {
+                    null.toString()
+                }
+        }
+        return downloadUri
+    }
 }
+
 
 
 

@@ -45,22 +45,22 @@ class UserFragment : Fragment() {
 
         return v
     }
-
     @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(UserViewModel::class.java)
         viewModel.getUserLogged()
-        viewModel.user.value?.let { loadUser(it) }
+        viewModel.user.observe(viewLifecycleOwner){
+            loadUser(it)
+        }
     }
-
     override fun onStart() {
         super.onStart()
 
         btnCloseSesion.setOnClickListener {
             viewModel.clearLoggedUser()
             viewModel.checkLogged.observe(viewLifecycleOwner){result ->
-                if(!result){
+                if(result){
                     goToLogin()
                 }
             }

@@ -1,5 +1,9 @@
 package com.productosapp.fragments.createProducts
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +12,7 @@ import com.productosapp.database.FirebaseDataUserSource
 import com.productosapp.entities.Products
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
+
 
 class CreateProductViewModel : ViewModel() {
 
@@ -22,7 +27,7 @@ class CreateProductViewModel : ViewModel() {
     val uri: MutableLiveData<String> = MutableLiveData()
     val viewState: MutableLiveData<String> = MutableLiveData()
 
-    companion object{
+    companion object {
         const val STATE_DONE = "done"
     }
 
@@ -53,13 +58,9 @@ class CreateProductViewModel : ViewModel() {
 
     fun createNewProduct() {
         viewModelScope.launch() {
-            val userid = userSource.userFb!!.id
+            val userid = userSource.currentUID
             val id = productSource.getProductId()
-//            val id = if(productSource.productListFb.size == 0){
-//                    0
-//                } else{
-//                    productSource.productListFb.last().id +1
-//                }
+
             productDb.value?.let {
                 val newProduct = Products(
                     id,
@@ -70,11 +71,11 @@ class CreateProductViewModel : ViewModel() {
                     it.model,
                     it.costprice,
                     it.sellingprice,
-                    it.imageuri )
+                    it.imageuri
+                )
                 productSource.insertProduct(newProduct)
                 viewState.value = STATE_DONE
             }
         }
     }
 }
-
