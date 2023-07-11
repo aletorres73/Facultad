@@ -1,7 +1,13 @@
 package com.productosapp.fragments.createProducts
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
+import android.os.Build.*
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,30 +16,31 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.annotation.ColorInt
 import androidx.lifecycle.Observer
-import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.database.collection.LLRBNode
 import com.productosapp.R
 import com.productosapp.entities.Products
 import kotlin.properties.Delegates
 
+
 class CreateProductFragment : Fragment() {
+
+    private val REQUEST_GALLERY = 1001
 
     lateinit var v: View
 
-    lateinit var btnLoadImage: Button
-    lateinit var btnMakeProduct: Button
+    lateinit var btnCamera      : Button
+    lateinit var btnGallery     : Button
+    lateinit var btnMakeProduct : Button
 
-    lateinit var inputItemproduct: TextView
-    lateinit var inputBrandproduct: TextView
-    lateinit var inputModelProdut: TextView
-    lateinit var inputCostPricePoduct: TextView
+    lateinit var inputItemproduct       : TextView
+    lateinit var inputBrandproduct      : TextView
+    lateinit var inputModelProdut       : TextView
+    lateinit var inputCostPricePoduct   : TextView
     lateinit var inputSellingPricePoduct: TextView
+
     var someEmpty by Delegates.notNull<Boolean>()
 
     lateinit var productImage: ImageView
@@ -59,17 +66,26 @@ class CreateProductFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        btnLoadImage.setOnClickListener {
+
+        btnGallery.setOnClickListener() {
+            openGallery()
+        }
+
+        btnCamera.setOnClickListener {
             IsSomeInputEmpty()
             if (!someEmpty) {
                 getInput()
-                viewModel.getUriImageProduct()
                 viewModel.uri.observe(viewLifecycleOwner, Observer { result ->
                     Glide.with(this)
                         .load(result)
-                        .into(productImage)})
+                        .into(productImage)
+                })
             } else {
-                Toast.makeText(requireContext(), "Complete los campos obligatorios", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    requireContext(),
+                    "Complete los campos obligatorios",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
@@ -78,20 +94,29 @@ class CreateProductFragment : Fragment() {
             if (!someEmpty) {
                 getInput()
                 viewModel.createNewProduct()
-                viewModel.viewState.observe(viewLifecycleOwner){
-                    when(it){
-                        CreateProductViewModel.STATE_DONE->{
-                            Toast.makeText(requireContext(), "Producto agregado a la lista", Toast.LENGTH_SHORT).show()
+                viewModel.viewState.observe(viewLifecycleOwner) {
+                    when (it) {
+                        CreateProductViewModel.STATE_DONE -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Producto agregado a la lista",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             findNavController().popBackStack()
                         }
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "Complete los campos obligatorios", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    requireContext(),
+                    "Complete los campos obligatorios",
+                    Toast.LENGTH_SHORT
+                )
                     .show()
             }
         }
     }
+
     private fun getInput() {
         product.item = inputItemproduct.text.toString()
         product.brand = inputBrandproduct.text.toString()
@@ -151,7 +176,8 @@ class CreateProductFragment : Fragment() {
     }
 
     private fun loadFindByView() {
-        btnLoadImage = v.findViewById(R.id.btnLoadImage)
+        btnCamera = v.findViewById(R.id.btnCamera)
+        btnGallery = v.findViewById(R.id.btnGallery)
         btnMakeProduct = v.findViewById(R.id.btnMakeProduct)
         inputItemproduct = v.findViewById(R.id.inputItemproduct)
         inputBrandproduct = v.findViewById(R.id.inputBrandproduct)
@@ -160,4 +186,25 @@ class CreateProductFragment : Fragment() {
         inputSellingPricePoduct = v.findViewById(R.id.inputSellingPricePoduct)
         productImage = v.findViewById(R.id.productImage)
     }
+
+    private fun openGallery() {
+        val intentGallery = Intent(Intent.ACTION_PICK)
+        intentGallery.type ="image/*"
+        startActivityForResult(intentGallery,REQUEST_GALLERY)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_GALLERY) {
+            val imageUri = data?.data
+            if (imageUri != null) {
+                productImage.setImageURI(imageUri)
+                viewModel.uri.value = imageUri
+                viewModel.uploadImage()
+            }
+        }
+    }
+
+
 }
+

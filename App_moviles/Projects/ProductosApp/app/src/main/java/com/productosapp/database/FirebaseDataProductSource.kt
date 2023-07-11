@@ -6,6 +6,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+
 import com.productosapp.entities.Products
 import kotlinx.coroutines.tasks.await
 import java.io.File
@@ -20,6 +21,9 @@ class FirebaseDataProductSource (): ProductSource {
 
     var productListFb = mutableListOf<Products>()
     var productFb: Products = Products()
+
+    lateinit var downloadUri: String
+
 
     override suspend fun loadProductByUserId(userid: String) {
         val productList = mutableListOf<Products>()
@@ -126,31 +130,16 @@ class FirebaseDataProductSource (): ProductSource {
         }
     }
 
-    override suspend fun uploadImage(path: String): String {
-        lateinit var downloadUri: String
-
+    override suspend fun uploadImage(path: Uri) {
         val storageRef = storage.reference
-        val file = Uri.fromFile(File(path))
-        val ref = storageRef.child("images/${file.lastPathSegment}")
-        val uploadTask = ref.putFile(file)
-
-        uploadTask.continueWithTask { task ->
-            if (!task.isSuccessful) {
-                task.exception?.let {
-                    throw it
-                }
-            }
-            ref.downloadUrl
-        }.addOnCompleteListener { task ->
-            downloadUri = if (task.isSuccessful) {
-                task.result.toString()
-                } else {
-                    null.toString()
-                }
-        }
-        return downloadUri
+        val fileRef = storageRef.child("images/${path.lastPathSegment}")
+        fileRef.putFile(path).await() // Esperar a que se complete la carga
+        val downloadUrl = fileRef.downloadUrl.await() // Esperar a que se obtenga la URL de descarga
+        downloadUri = downloadUrl.toString()
     }
 }
+
+
 
 
 

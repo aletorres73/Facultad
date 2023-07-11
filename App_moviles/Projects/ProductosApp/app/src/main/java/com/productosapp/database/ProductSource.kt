@@ -1,7 +1,9 @@
 package com.productosapp.database
 
+import android.net.Uri
 import com.productosapp.entities.Products
 import com.productosapp.entities.User
+import java.net.URI
 
 interface ProductSource {
 
@@ -12,7 +14,7 @@ interface ProductSource {
     suspend fun findProductDetail(): Products?
     suspend fun delete(id: Int)
     suspend fun clearDetail(id: Int)
-    suspend fun uploadImage(path : String): String
+    suspend fun uploadImage(path : Uri)
 
 
 }
