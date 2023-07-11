@@ -1,6 +1,7 @@
 package com.productosapp.database
 
 import android.net.Uri
+import androidx.core.os.bundleOf
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -136,6 +137,13 @@ class FirebaseDataProductSource (): ProductSource {
         fileRef.putFile(path).await() // Esperar a que se complete la carga
         val downloadUrl = fileRef.downloadUrl.await() // Esperar a que se obtenga la URL de descarga
         downloadUri = downloadUrl.toString()
+    }
+
+    override suspend fun deleteImage(path: Uri) {
+        val storageRef = storage.reference
+        val deleteRef = storageRef.child(path.toString())
+        deleteRef.delete().await()
+        downloadUri = ""
     }
 }
 

@@ -15,6 +15,7 @@ interface ProductSource {
     suspend fun delete(id: Int)
     suspend fun clearDetail(id: Int)
     suspend fun uploadImage(path : Uri)
+    suspend fun deleteImage(path: Uri)
 
 
 }

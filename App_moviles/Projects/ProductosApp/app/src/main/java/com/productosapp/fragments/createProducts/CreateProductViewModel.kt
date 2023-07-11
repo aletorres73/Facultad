@@ -2,6 +2,7 @@ package com.productosapp.fragments.createProducts
 
 
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,11 +38,20 @@ class CreateProductViewModel : ViewModel() {
         }
     }
 
+    fun deleteImage(){
+        viewModelScope.launch {
+            viewModelScope.launch {
+                productSource.deleteImage(productSource.downloadUri.toUri())
+            }
+        }
+
+    }
+
     fun createNewProduct() {
         viewModelScope.launch() {
             val userid = userSource.currentUID
             val id = productSource.getProductId()
-
+            val imageUri = productSource.downloadUri
             productDb.value?.let {
                 val newProduct = Products(
                     id,
@@ -52,7 +62,7 @@ class CreateProductViewModel : ViewModel() {
                     it.model,
                     it.costprice,
                     it.sellingprice,
-                    it.imageuri
+                    imageUri
                 )
                 productSource.insertProduct(newProduct)
                 viewState.value = STATE_DONE
