@@ -3,8 +3,6 @@ package com.productosapp.database
 import androidx.room.Dao
 import androidx.room.*
 import com.productosapp.entities.Products
-import com.productosapp.entities.User
-
 
 @Dao
 interface ProductsDao{
@@ -36,14 +34,6 @@ interface ProductsDao{
     fun findProductDetail(): Products?
     @Query("SELECT imageuri FROM products WHERE detail = 1")
     fun getImageUrl(): String?
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/product2
-=======
-
->>>>>>> origin/product2.2
 }
 
 

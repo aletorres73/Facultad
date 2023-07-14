@@ -34,7 +34,7 @@ class RegisterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         v = inflater.inflate(R.layout.fragment_register, container, false)
 
         inputName = v.findViewById(R.id.inputName)
@@ -93,33 +93,3 @@ class RegisterFragment : Fragment() {
         }
     }
 }
-
-            //else {
-//                val user =
-//                    UserManager.getUsers().find { it.email == email || it.username == username }
-//                if (user != null) {
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Ya existe un usuario con el correo o el nombre de usuario ingresados",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                } else {
-//                    UserManager.addUser(
-//                        User(
-//                            name = name,
-//                            lastname = lastname,
-//                            username = username,
-//                            email = email,
-//                            password = password
-//                        )
-//                    )
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Usuario creado correctamente",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-//            }
-//        }
-//    }
-//}

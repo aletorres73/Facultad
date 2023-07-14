@@ -1,6 +1,5 @@
 package com.productosapp.fragments.home
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -32,7 +31,7 @@ class DetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         v= inflater.inflate(R.layout.fragment_detail, container, false)
         valItemProduct  = v.findViewById(R.id.valItemProduct)
         valBrandProduct = v.findViewById(R.id.valBrandProduct)
@@ -73,8 +72,5 @@ class DetailFragment : Fragment() {
             Snackbar.make(v, "Producto eliminado...", Snackbar.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
-
     }
-
-
 }
