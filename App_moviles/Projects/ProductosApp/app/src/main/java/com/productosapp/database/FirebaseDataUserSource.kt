@@ -9,7 +9,6 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.productosapp.entities.User
 import kotlinx.coroutines.tasks.await
-import java.net.UnknownServiceException
 
 class FirebaseDataUserSource (): UserSource {
 

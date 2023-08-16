@@ -36,7 +36,7 @@ class CreateProductFragment : Fragment() {
     lateinit var btnCamera: Button
     lateinit var btnGallery: Button
     lateinit var btnMakeProduct: Button
-    lateinit var btnDeleteImage: Button
+    //lateinit var btnDeleteImage: Button
 
     lateinit var inputItemproduct: TextView
     lateinit var inputBrandproduct: TextView
@@ -102,9 +102,9 @@ class CreateProductFragment : Fragment() {
                     Toast.LENGTH_SHORT).show()
             }
         }
-        btnDeleteImage.setOnClickListener{
-            viewModel.deleteImage()
-        }
+//        btnDeleteImage.setOnClickListener{
+//            viewModel.deleteImage()
+//        }
     }
 
     private fun getInput() {
@@ -169,7 +169,7 @@ class CreateProductFragment : Fragment() {
         btnCamera = v.findViewById(R.id.btnCamera)
         btnGallery = v.findViewById(R.id.btnGallery)
         btnMakeProduct = v.findViewById(R.id.btnMakeProduct)
-        btnDeleteImage = v.findViewById(R.id.btnDeleteImage)
+        //btnDeleteImage = v.findViewById(R.id.btnDeleteImage)
         inputItemproduct = v.findViewById(R.id.inputItemproduct)
         inputBrandproduct = v.findViewById(R.id.inputBrandproduct)
         inputModelProdut = v.findViewById(R.id.inputModelProdut)
