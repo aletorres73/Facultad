@@ -1,0 +1,19 @@
+* D:\aletorres\Documentos\git\Facultad\TC2\JupyterNotebook\trabajo_semanal3_torres\pasabjos2.asc
+R Vo N002 {{1/(C*W01)}}
+C Vo 0 {C}
+L Vi N001 {L}
+R1 N001 0 {R}
+C1 N001 0 {C}
+XU1 N002 N001 N002 opamp Aol=100K GBW=10Meg
+V1 Vi 0 SINE(0 10m 1k) AC 10m
+.param Q=0.954
+.param C=100n
+.param W01=11310
+.param W02 = 11870
+.param L = 1/(W02*W02*C)
+.param R =Q/(C*W02)
+.ac dec 10 1 100k
+.inc opamp.sub
+* Simulación implementando capacitores de 900nf.\nReparametrizando los componentes.
+.backanno
+.end
